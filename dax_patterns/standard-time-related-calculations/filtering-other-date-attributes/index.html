@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Фильтрация дополнительных атрибутов даты - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .mini-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 820px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 164px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre + p,
+    p + pre {
+      margin-top: 16px;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Стандартные расчеты по времени</span>
+          <h1>Filtering other date attributes</h1>
+          <p class="lead">Паттерн нужен, когда накопительный расчет по датам нужно читать вместе с дополнительным свойством даты: днем недели, рабочим днем, праздником, сезоном или другим признаком.</p>
+          <div class="hero-points" aria-label="Ключевые темы">
+            <span>YTD по дню недели</span>
+            <span>атрибуты даты</span>
+            <span>отдельная таблица атрибута</span>
+            <span>будущие периоды скрываются</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема сохранения фильтра даты">
+          <h2>Где теряется смысл</h2>
+          <p class="chart-note">Если разрез по дню недели берется из таблицы <code>Date</code>, календарное окно YTD снимает и этот фильтр. Отдельная таблица дня недели сохраняет фильтр на фактах.</p>
+          <svg class="mini-chart" viewBox="0 0 420 260" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Сравнение разреза из Date и отдельной таблицы атрибута</title>
+            <desc id="chart-desc">Две панели показывают, что фильтр дня недели теряется в таблице Date и сохраняется в отдельной таблице атрибута.</desc>
+            <rect x="0" y="0" width="420" height="260" rx="8" fill="#ffffff"></rect>
+            <g font-family="Roboto, Arial, sans-serif">
+              <text x="28" y="36" fill="#1f2937" font-size="15" font-weight="700">Date[Day of Week]</text>
+              <text x="232" y="36" fill="#1f2937" font-size="15" font-weight="700">Day of Week[Day]</text>
+              <rect x="28" y="56" width="160" height="148" rx="8" fill="#f5f6f8" stroke="#dfe3ea"></rect>
+              <rect x="232" y="56" width="160" height="148" rx="8" fill="#f5f6f8" stroke="#dfe3ea"></rect>
+              <g font-size="13" fill="#5e6673">
+                <text x="44" y="84">Mon</text>
+                <text x="44" y="124">Tue</text>
+                <text x="44" y="164">Total</text>
+                <text x="248" y="84">Mon</text>
+                <text x="248" y="124">Tue</text>
+                <text x="248" y="164">Total</text>
+              </g>
+              <g fill="#cbd2dc">
+                <rect x="92" y="70" width="70" height="18" rx="4"></rect>
+                <rect x="92" y="110" width="76" height="18" rx="4"></rect>
+                <rect x="92" y="150" width="82" height="18" rx="4"></rect>
+              </g>
+              <g fill="#2f4eff">
+                <rect x="296" y="70" width="34" height="18" rx="4"></rect>
+                <rect x="296" y="110" width="42" height="18" rx="4"></rect>
+                <rect x="296" y="150" width="82" height="18" rx="4"></rect>
+              </g>
+              <path d="M174 79 L204 79 L204 164 L174 164" fill="none" stroke="#b84a4a" stroke-width="3" stroke-linecap="round"></path>
+              <path d="M188 79 L198 79" stroke="#b84a4a" stroke-width="3" stroke-linecap="round"></path>
+              <path d="M188 164 L198 164" stroke="#b84a4a" stroke-width="3" stroke-linecap="round"></path>
+              <text x="31" y="226" fill="#5e6673" font-size="13">Разрез из Date считает почти весь YTD,</text>
+              <text x="31" y="244" fill="#5e6673" font-size="13">отдельная таблица сохраняет фильтр дня недели.</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span style="color:#cbd2dc"><i></i>фильтр снят вместе с Date</span>
+            <span style="color:#2f4eff"><i></i>фильтр сохранен отдельно</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн помогает там, где пользователь ожидает увидеть накопительный итог не по всем датам, а по датам с конкретным свойством.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Отчет использует стандартный календарь, аддитивную меру и разрезы вроде <code>Day of Week</code>, <code>Working Day</code>, праздника или сезона. Атрибут должен зависеть от той даты факта, по которой считается мера, например от <code>Sales[Order Date]</code>.</p>
+          </article>
+          <article class="card stop">
+            <h3>Лучше выбрать другой подход</h3>
+            <p>Нестандартные недели, календарь 4-4-5, плавающие периоды и сложные рабочие календари лучше сразу моделировать как отдельный календарь. Если пользователю нужен множественный выбор по атрибуту даты, надежнее вынести атрибут в отдельную таблицу, а не пытаться восстановить фильтр внутри одной меры.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Обычная YTD-мера строит собственное календарное окно и для этого снимает фильтры с таблицы <code>Date</code>. Если дополнительный атрибут тоже лежит в <code>Date</code>, он снимается вместе с календарным фильтром.</p>
+        </div>
+        <div class="flow" aria-label="Логика фильтрации дополнительных атрибутов даты">
+          <article class="step">
+            <h3>Пользователь выбирает разрез</h3>
+            <p>Например, строки таблицы показывают <code>Date[Day of Week]</code> рядом с кварталом или годом.</p>
+          </article>
+          <article class="step">
+            <h3>Мера открывает YTD-окно</h3>
+            <p><code>FILTER ( ALL ( 'Date' ), ... )</code> заменяет текущие даты диапазоном с начала года.</p>
+          </article>
+          <article class="step">
+            <h3>Фильтр атрибута исчезает</h3>
+            <p>Фильтр дня недели тоже находится в <code>Date</code>, поэтому строка <code>Mon</code> начинает считать все дни до последнего понедельника.</p>
+          </article>
+          <article class="step">
+            <h3>Фильтр нужно отделить</h3>
+            <p>Либо восстановить одно значение атрибута в мере, либо вынести атрибут в отдельную таблицу, связанную с фактом.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Базовая часть модели такая же, как у остальных стандартных расчетов по времени: явная таблица дат, таблица фактов и связь по дате заказа. Для устойчивого разреза добавляется отдельная таблица атрибута даты.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Колонки модели для фильтрации атрибутов даты">
+          <table>
+            <thead>
+              <tr>
+                <th>Таблица и колонка</th>
+                <th>Зачем нужна</th>
+                <th>Как формируется</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date[Date]</code></td>
+                <td>Календарная дата и ключ связи с <code>Sales[Order Date]</code>.</td>
+                <td>Одна строка на каждый день нужного диапазона без пропусков.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Year]</code>, <code>Date[Year Quarter]</code>, <code>Date[Year Month]</code></td>
+                <td>Календарные уровни для строк, колонок и фильтров дашборда.</td>
+                <td>Строятся из даты; текстовые подписи сортируются техническими ключами.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Day Index]</code></td>
+                <td>Непрерывная шкала дней для сравнения границ периода.</td>
+                <td>Последовательный номер дня в календарной таблице.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Year Start Day Index]</code></td>
+                <td>Первый день календарного года для YTD-окна.</td>
+                <td>Для каждой даты содержит <code>Day Index</code> 1 января того же года.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Day of Week]</code>, <code>Date[Day of Week Sort]</code></td>
+                <td>Демонстрируют проблему: это удобный календарный атрибут, но его фильтр снимается YTD-мерой вместе с <code>Date</code>.</td>
+                <td>День недели и числовая сортировка подписи.</td>
+              </tr>
+              <tr>
+                <td><code>Date[DateWithSales]</code></td>
+                <td>Помогает не показывать значения после последней даты с фактами.</td>
+                <td><code>1</code>, если дата не позже последней даты продаж; иначе <code>0</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Order Date]</code>, <code>Sales[Order Day Index]</code>, <code>Sales[Amount]</code></td>
+                <td>Дата факта, ее дневной индекс и числовое значение продаж.</td>
+                <td>Приходят из фактов или подготавливаются при загрузке данных.</td>
+              </tr>
+              <tr>
+                <td><code>Day of Week[Date]</code>, <code>Day of Week[Day of Week]</code>, <code>Day of Week[Day of Week Sort]</code></td>
+                <td>Отдельный источник разреза по дню недели, который фильтрует <code>Sales</code> напрямую и не зависит от снятия фильтров с <code>Date</code>.</td>
+                <td>Копия дат из <code>Date</code> с нужными атрибутами и сортировкой подписи.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Ключевые связи модели">
+          <span><code>Date[Date]</code> -> <code>Sales[Order Date]</code></span>
+          <span><code>Day of Week[Date]</code> -> <code>Sales[Order Date]</code></span>
+          <span>обе связи 1:*</span>
+          <span>разрез по дню недели брать из отдельной таблицы</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>В примерах физическая колонка факта называется <code>Sales[Amount]</code>, а пользовательская мера - <code>Sales Amount</code>. Это отделяет бизнес-меру от технической колонки.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Базовая мера и контроль будущих дат</summary>
+            <div class="details-body">
+              <p><code>Sales Amount</code> показывает сумму продаж. <code>ShowValueForDates</code> - техническая мера: она возвращает <code>1</code>, если первый день выбранного периода не позже последней даты продаж, и пустое значение для будущих периодов.</p>
+              <pre><code>Sales Amount :=
+SUM ( Sales[Amount] )
+
+ShowValueForDates :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    1,
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary><code>Sales YTD</code>: календарный итог с начала года</summary>
+            <div class="details-body">
+              <p>Эта мера корректна для календарных разрезов из таблицы <code>Date</code>. Но из-за <code>ALL ( 'Date' )</code> она снимает и фильтры дополнительных атрибутов, если эти атрибуты находятся в той же таблице.</p>
+              <pre><code>Sales YTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[Year Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary><code>Sales YTD (day of week)</code>: восстановление одного фильтра дня недели</summary>
+            <div class="details-body">
+              <p>Мера повторно добавляет фильтр дня недели, если в текущем контексте выбран ровно один день недели. Для строк таблицы по <code>Date[Day of Week]</code> это дает ожидаемый YTD только по выбранному дню недели.</p>
+              <pre><code>Sales YTD (day of week) :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    IF (
+        MIN ( 'Date'[Day of Week Sort] ) = MAX ( 'Date'[Day of Week Sort] ),
+        CALCULATE (
+            SUM ( Sales[Amount] ),
+            FILTER (
+                ALL ( 'Date' ),
+                AND (
+                    AND (
+                        'Date'[Day Index] >= MAX ( 'Date'[Year Start Day Index] ),
+                        'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+                    ),
+                    'Date'[Day of Week Sort] = MIN ( 'Date'[Day of Week Sort] )
+                )
+            )
+        ),
+        CALCULATE (
+            SUM ( Sales[Amount] ),
+            FILTER (
+                ALL ( 'Date' ),
+                AND (
+                    'Date'[Day Index] >= MAX ( 'Date'[Year Start Day Index] ),
+                    'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+                )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+              <p>Если в фильтре выбрано несколько дней недели из <code>Date</code>, эта формула осознанно возвращается к базовому <code>Sales YTD</code>. Для такого сценария используйте отдельную таблицу атрибута.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Отдельная таблица атрибута даты</summary>
+            <div class="details-body">
+              <p>Смысл модельного решения можно описать как копию дат с нужным атрибутом. В реальной модели такую таблицу удобно подготовить в источнике данных или в ETL и связать с фактом по той же дате заказа.</p>
+              <pre><code>Day of Week =
+SELECTCOLUMNS (
+    'Date',
+    "Date", 'Date'[Date],
+    "Day of Week", 'Date'[Day of Week]
+)</code></pre>
+              <p>После этого визуальный разрез берется из <code>Day of Week[Day of Week]</code>. Базовая мера <code>Sales YTD</code> продолжает снимать фильтры только с <code>Date</code>, а фильтр отдельной таблицы остается на <code>Sales</code>.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Главная проверка - сумма строк по дням недели должна сходиться с итогом YTD за период только тогда, когда строки действительно фильтруют факты по дню недели.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card accent">
+            <h3>Базовый YTD в <code>Date</code>-разрезе</h3>
+            <p>Строка дня недели выглядит правдоподобно, но фактически считает все дни недели до последней видимой даты этой строки. Такой результат нельзя читать как вклад выбранного дня недели.</p>
+          </article>
+          <article class="card accent">
+            <h3>Восстановленная мера</h3>
+            <p><code>Sales YTD (day of week)</code> подходит для строки, где виден один день недели. На итоговой строке или без фильтра дня недели она совпадает с обычным <code>Sales YTD</code>.</p>
+          </article>
+          <article class="card accent">
+            <h3>Отдельная таблица</h3>
+            <p>Разрез из <code>Day of Week</code> работает с базовой YTD-мерой и лучше масштабируется на несколько атрибутов: рабочий день, праздник, сезон или тип торгового дня.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">!</span>
+          <p><strong>Следите за датой факта.</strong> Если отчет считает продажи по <code>Order Date</code>, то отдельная таблица атрибута должна фильтровать <code>Sales[Order Date]</code>. Для доставки, оплаты или другой даты нужна отдельная таблица атрибута, связанная с соответствующей датой факта.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Визуальные разрезы</h2>
+          <p>Разрез должен отвечать на вопрос, какие даты попали в накопительное окно и какие факты остались после фильтрации.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работает</h3>
+            <ul>
+              <li><code>Date[Year]</code>, <code>Date[Year Quarter]</code> и <code>Date[Year Month]</code> как календарная ось для YTD.</li>
+              <li><code>Day of Week[Day of Week]</code> из отдельной таблицы для разреза по дням недели.</li>
+              <li>Обычные бизнес-фильтры по товару, региону, каналу или клиенту поверх календарного окна.</li>
+              <li>Таблица, где итог по дням недели можно сверить с YTD за тот же квартал или год.</li>
+            </ul>
+          </article>
+
+          <article class="card stop">
+            <h3>Может запутать</h3>
+            <ul>
+              <li><code>Date[Day of Week]</code> вместе с обычным <code>Sales YTD</code>, если пользователь ожидает вклад только выбранного дня недели.</li>
+              <li>Множественный выбор по <code>Date[Day of Week]</code> для меры <code>Sales YTD (day of week)</code>: формула восстанавливает только одно значение дня недели.</li>
+              <li>Смешивание атрибутов разных дат факта, например дня недели заказа и календаря доставки в одном расчете.</li>
+              <li>Будущие месяцы после последней продажи. Такие периоды должны оставаться пустыми, а не тянуть последнее накопленное значение вперед.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Практические условия реализации</h2>
+          <p>Паттерн остается простым, если заранее договориться, где живет каждый атрибут даты и какие разрезы пользователь будет применять в дашборде.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="note">
+            <p><strong>Календарное окно снимает фильтры с <code>Date</code>.</strong> Это ожидаемое поведение для YTD: мера заменяет текущий набор дат собственным диапазоном с начала года.</p>
+          </article>
+          <article class="note">
+            <p><strong>Один день недели можно восстановить в мере.</strong> Такой вариант удобен для простого табличного отчета, но его нужно явно документировать для итоговых строк и множественного выбора.</p>
+          </article>
+          <article class="note">
+            <p><strong>Несколько атрибутов лучше вынести в модель.</strong> Отдельная таблица может хранить день недели, признак рабочего дня, праздник и сезон, если все они зависят от одной даты факта.</p>
+          </article>
+          <article class="note">
+            <p><strong>Blank важнее нуля.</strong> Для будущих периодов используйте пустой результат через <code>DIVIDE ( 0, 0 )</code>, чтобы визуализация не показывала фиктивные продажи.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <a href="../../../index.html">К списку паттернов</a>
+    </div>
+  </footer>
+</body>
+</html>

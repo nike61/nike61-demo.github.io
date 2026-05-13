@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Рост накопленного периода - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .mini-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 780px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 164px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre + p,
+    p + pre {
+      margin-top: 16px;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 362px);
+        margin-left: 14px;
+        margin-right: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Стандартные расчеты по времени</span>
+          <h1>Рост накопленного периода</h1>
+          <p class="lead">Паттерн сравнивает накопленную часть текущего года, квартала или месяца с такой же частью прошлого периода: на ту же дату, без сравнения неполного периода с полным.</p>
+          <div class="hero-points" aria-label="Ключевые сравнения">
+            <span>YOYTD</span>
+            <span>QOQTD</span>
+            <span>MOMTD</span>
+            <span>YTD/QTD/MTD</span>
+            <span>неполные периоды</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема сравнения накопленных периодов">
+          <h2>Сравнение на ту же дату</h2>
+          <p class="chart-note">Если продажи текущего августа есть только до 15 числа, <code>Sales PMTD</code> берет 1-15 июля, а не весь июль.</p>
+          <svg class="mini-chart" viewBox="0 0 420 260" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Схема сравнения накопленных периодов</title>
+            <desc id="chart-desc">Иллюстрация текущего накопленного периода и сопоставимого накопленного периода в прошлом.</desc>
+            <rect x="0" y="0" width="420" height="260" rx="8" fill="#ffffff"></rect>
+            <g stroke="#e4e8ef" stroke-width="1">
+              <line x1="44" y1="70" x2="382" y2="70"></line>
+              <line x1="44" y1="130" x2="382" y2="130"></line>
+              <line x1="44" y1="190" x2="382" y2="190"></line>
+            </g>
+            <g font-family="Roboto, Arial, sans-serif" font-size="13" fill="#5e6673">
+              <text x="44" y="42">текущий MTD</text>
+              <text x="44" y="112">предыдущий MTD</text>
+              <text x="44" y="222">остаток периода</text>
+            </g>
+            <rect x="150" y="55" width="126" height="30" rx="8" fill="#2f4eff"></rect>
+            <rect x="276" y="55" width="80" height="30" rx="8" fill="#dfe3ea"></rect>
+            <rect x="150" y="115" width="126" height="30" rx="8" fill="#0f8f73"></rect>
+            <rect x="276" y="115" width="80" height="30" rx="8" fill="#dfe3ea"></rect>
+            <rect x="150" y="175" width="206" height="30" rx="8" fill="#eef1f6"></rect>
+            <line x1="276" y1="47" x2="276" y2="154" stroke="#ffc106" stroke-width="4" stroke-linecap="round"></line>
+            <path d="M150 156 C176 166, 250 166, 276 156" fill="none" stroke="#0f8f73" stroke-width="3" stroke-linecap="round"></path>
+            <path d="M150 96 C176 106, 250 106, 276 96" fill="none" stroke="#2f4eff" stroke-width="3" stroke-linecap="round"></path>
+            <g font-family="Roboto, Arial, sans-serif" font-size="12" font-weight="500">
+              <text x="181" y="75" fill="#ffffff">1-15 авг.</text>
+              <text x="184" y="135" fill="#ffffff">1-15 июля</text>
+              <text x="292" y="75" fill="#5e6673">16-31</text>
+              <text x="292" y="135" fill="#5e6673">16-31</text>
+              <text x="175" y="195" fill="#5e6673">не участвует в расчете</text>
+            </g>
+            <g fill="#5e6673" font-family="Roboto, Arial, sans-serif" font-size="12">
+              <text x="284" y="35">последняя дата фактов</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span style="color:#2f4eff"><i></i>Sales MTD</span>
+            <span style="color:#0f8f73"><i></i>Sales PMTD</span>
+            <span style="color:#b98b00"><i></i>DateWithSales</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн нужен, когда бизнесу важен темп движения внутри периода: как год идет относительно прошлого года на ту же дату, как квартал идет относительно предыдущего квартала и как текущий месяц идет относительно прошлого месяца.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Аддитивные показатели, которые корректно суммируются по времени: продажи, выручка, количество заказов, объем операций. Модель использует обычный календарь и явную таблицу <code>Date</code> с одной строкой на каждый день.</p>
+          </article>
+          <article class="card stop">
+            <h3>Лучше выбрать другой подход</h3>
+            <p>Недельные календари, схема 4-4-5, плавающий финансовый календарь, сравнение только рабочих дней или показатели, где простая сумма с начала периода не является корректной базой для роста.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Сначала считается текущий накопленный итог: с начала года, квартала или месяца до последней видимой даты. Затем строится такое же окно в периоде сравнения и считается абсолютный и процентный рост.</p>
+        </div>
+        <div class="flow" aria-label="Логика роста накопленного периода">
+          <article class="step">
+            <h3>Найти текущую границу</h3>
+            <p>Визуализация задает последнюю видимую дату через <code>Date</code>: день, месяц, квартал или год.</p>
+          </article>
+          <article class="step">
+            <h3>Собрать to-date окно</h3>
+            <p><code>Sales YTD</code>, <code>Sales QTD</code> и <code>Sales MTD</code> суммируют продажи от начала периода до текущей даты.</p>
+          </article>
+          <article class="step">
+            <h3>Сдвинуть окно назад</h3>
+            <p><code>Sales PYTD</code>, <code>Sales PQTD</code> и <code>Sales PMTD</code> берут такую же пройденную часть прошлого периода.</p>
+          </article>
+          <article class="step">
+            <h3>Посчитать рост</h3>
+            <p><code>YOYTD</code>, <code>QOQTD</code> и <code>MOMTD</code> показывают разницу и процент относительно базы предыдущего накопленного периода.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Для стандартных расчетов нужна непрерывная календарная таблица. Таблица фактов <code>Sales</code> связывается с ней по дате заказа, а границы текущих и прошлых накопленных окон заранее подготовлены в <code>Date</code>.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Колонки модели данных">
+          <table>
+            <thead>
+              <tr>
+                <th>Колонка</th>
+                <th>Зачем нужна</th>
+                <th>Как формируется</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date[Date]</code></td>
+                <td>Дневной ключ календаря и сторона связи с <code>Sales[Order Date]</code>.</td>
+                <td>Одна строка на каждый день нужного диапазона без пропусков.</td>
+              </tr>
+              <tr>
+                <td><code>Date Key</code>, <code>Date Label</code></td>
+                <td>Технический ключ и пользовательская дневная подпись.</td>
+                <td><code>Date Key</code> хранится как <code>YYYYMMDD</code>, подпись сортируется по ключу.</td>
+              </tr>
+              <tr>
+                <td><code>Year</code>, <code>Year Quarter</code>, <code>Year Month</code></td>
+                <td>Календарные уровни для матриц, графиков и фильтров.</td>
+                <td>Строятся из даты; текстовые подписи сортируются по техническим ключам.</td>
+              </tr>
+              <tr>
+                <td><code>Year Start Day Index</code>, <code>Quarter Start Day Index</code>, <code>Month Start Day Index</code></td>
+                <td>Нижние границы текущих окон <code>YTD</code>, <code>QTD</code> и <code>MTD</code>.</td>
+                <td>Для каждой даты содержат индекс первого дня ее года, квартала или месяца.</td>
+              </tr>
+              <tr>
+                <td><code>Day Index</code></td>
+                <td>Непрерывная числовая шкала дней для фильтра окон.</td>
+                <td>Последовательный номер дня в таблице <code>Date</code>.</td>
+              </tr>
+              <tr>
+                <td><code>DateWithSales</code></td>
+                <td>Отделяет даты, которые уже могут иметь факты, от будущих дат.</td>
+                <td><code>1</code>, если дата не позже последней даты с продажами; иначе <code>0</code>.</td>
+              </tr>
+              <tr>
+                <td><code>PYTD Comparable Start Day Index</code>, <code>PQTD Comparable Start Day Index</code>, <code>PMTD Comparable Start Day Index</code></td>
+                <td>Нижние границы окон предыдущего накопленного года, квартала и месяца.</td>
+                <td>Берутся от начала сдвинутого периода, но только для дат, которые можно сравнивать с текущими фактами.</td>
+              </tr>
+              <tr>
+                <td><code>PY Comparable Day Index</code>, <code>PQ Comparable Day Index</code>, <code>PM Comparable Day Index</code></td>
+                <td>Верхние границы окон предыдущего накопленного периода.</td>
+                <td>Для будущих дат получают техническое низкое значение, чтобы меры вернули пустое значение.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Order Date]</code>, <code>Sales[Order Day Index]</code>, <code>Sales[Amount]</code></td>
+                <td>Дата заказа, ее дневной индекс и сумма продажи.</td>
+                <td><code>Order Date</code> связан с <code>Date[Date]</code>; <code>Order Day Index</code> повторяет индекс даты заказа.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Минимальные требования к модели">
+          <span>даты без пропусков</span>
+          <span>связь Sales -> Date</span>
+          <span>григорианские месяцы и кварталы</span>
+          <span>границы to-date в Date</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>Физическая колонка факта называется <code>Sales[Amount]</code>, а пользовательская мера - <code>Sales Amount</code>. Так имя меры не конфликтует с именем колонки.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Базовая мера и контроль будущих дат</summary>
+            <div class="details-body">
+              <p><code>Sales Amount</code> показывает текущую сумму продаж. <code>ShowValueForDates</code> - техническая мера: она возвращает <code>1</code>, если выбранный период начинается не позже последней даты с продажами, и пустое значение для будущих периодов.</p>
+              <pre><code>Sales Amount :=
+SUM ( Sales[Amount] )
+
+ShowValueForDates :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    1,
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Текущие накопленные итоги: <code>Sales YTD</code>, <code>Sales QTD</code>, <code>Sales MTD</code></summary>
+            <div class="details-body">
+              <p><code>Sales YTD</code> суммирует продажи с начала года, <code>Sales QTD</code> - с начала квартала, <code>Sales MTD</code> - с начала месяца. Все три меры используют последнюю видимую дату текущего контекста и скрывают будущие периоды.</p>
+              <pre><code>Sales YTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[Year Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales QTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[Quarter Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales MTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[Month Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Previous-to-date база: <code>Sales PYTD</code>, <code>Sales PQTD</code>, <code>Sales PMTD</code></summary>
+            <div class="details-body">
+              <p><code>Sales PYTD</code> берет накопленный итог прошлого года до эквивалентной даты, <code>Sales PQTD</code> - накопленный итог предыдущего квартала, <code>Sales PMTD</code> - накопленный итог предыдущего месяца. Именно эти меры делают сравнение неполного периода корректным.</p>
+              <pre><code>Sales PYTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[PYTD Comparable Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PY Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales PQTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[PQTD Comparable Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PQ Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales PMTD :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MAX ( 'Date'[PMTD Comparable Start Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PM Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+              <p>Контрольная мера <code>Sales PYTD (2)</code>, если она оставлена в модели, должна совпадать с <code>Sales PYTD</code>. Для пользовательского отчета обычно достаточно основной меры <code>Sales PYTD</code>.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Рост накопленного периода: <code>YOYTD</code>, <code>QOQTD</code>, <code>MOMTD</code></summary>
+            <div class="details-body">
+              <p>Абсолютный рост считается как текущий накопленный итог минус база предыдущего накопленного периода. Процентный рост делит эту разницу на значение этой базы.</p>
+              <pre><code>Sales YOYTD :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales YTD] ),
+        ISBLANK ( Sales[Sales PYTD] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales YTD] - Sales[Sales PYTD]
+)
+
+Sales YOYTD % :=
+DIVIDE (
+    Sales[Sales YOYTD],
+    Sales[Sales PYTD]
+)
+
+Sales QOQTD :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales QTD] ),
+        ISBLANK ( Sales[Sales PQTD] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales QTD] - Sales[Sales PQTD]
+)
+
+Sales QOQTD % :=
+DIVIDE (
+    Sales[Sales QOQTD],
+    Sales[Sales PQTD]
+)
+
+Sales MOMTD :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales MTD] ),
+        ISBLANK ( Sales[Sales PMTD] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales MTD] - Sales[Sales PMTD]
+)
+
+Sales MOMTD % :=
+DIVIDE (
+    Sales[Sales MOMTD],
+    Sales[Sales PMTD]
+)</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Главная идея в том, что значение предыдущего накопленного периода не обязано совпадать с полным итогом прошлого месяца, квартала или года. Оно совпадает только с уже пройденной частью текущего периода.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card accent">
+            <h3>Первый период остается пустым</h3>
+            <p>У первого года нет накопленного значения прошлого года, у первого месяца нет накопленного значения прошлого месяца. В таких строках база сравнения, рост и процент роста возвращают пустое значение.</p>
+          </article>
+          <article class="card accent">
+            <h3>Последний период сравнивается честно</h3>
+            <p>Если факты есть до 15 августа, <code>Sales PYTD</code> берет прошлый год до 15 августа, <code>Sales PQTD</code> - предыдущий квартал до эквивалентного дня, <code>Sales PMTD</code> - 1-15 июля.</p>
+          </article>
+          <article class="card accent">
+            <h3>День без продаж не ломает накопление</h3>
+            <p>Если внутри текущего периода есть дата без продаж, накопленные меры продолжают показывать накопленный итог за период, пока дата не находится после последней даты фактов.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">!</span>
+          <p><strong>Процент роста считается от базы предыдущего накопленного периода.</strong> <code>Sales MOMTD %</code> делит разницу на <code>Sales PMTD</code>, <code>Sales QOQTD %</code> - на <code>Sales PQTD</code>, <code>Sales YOYTD %</code> - на <code>Sales PYTD</code>. Если база пустая или равна нулю, процент не стоит интерпретировать как обычную динамику.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Визуальные разрезы</h2>
+          <p>Меры роста накопленного периода хорошо читаются там, где визуализация явно показывает календарный уровень. Дополнительные бизнес-фильтры можно применять поверх календаря.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работает</h3>
+            <ul>
+              <li>Матрица с уровнями <code>Year</code>, <code>Year Quarter</code>, <code>Year Month</code> и датой.</li>
+              <li>Отдельные таблицы или графики для <code>Sales YOYTD</code>, <code>Sales QOQTD</code> и <code>Sales MOMTD</code>, когда нужен фиксированный тип сравнения.</li>
+              <li>Карточки KPI для текущего года, квартала или месяца, если рядом показана дата, до которой накоплен результат.</li>
+              <li>Фильтры по товару, региону, каналу продаж или клиентскому сегменту, если пользователь ожидает сравнение внутри выбранного сегмента.</li>
+            </ul>
+          </article>
+
+          <article class="card stop">
+            <h3>Может вводить в заблуждение</h3>
+            <ul>
+              <li>Общий итог по нескольким годам без понятной последней даты: неясно, какую базу предыдущего накопленного периода должен означать общий результат.</li>
+              <li>Разрез по дню недели, признаку рабочего дня или другой календарной метке, если пользователь ожидает сравнение только внутри этой метки. Окно паттерна остается календарным.</li>
+              <li>Фильтр, который оставляет внутри годовой строки один месяц: пользователь может прочитать годовую строку как YTD, хотя фактически контекст даты уже ограничен месяцем.</li>
+              <li>Сравнение нестандартных периодов, которые не совпадают с календарным месяцем, кварталом или годом.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Практические условия реализации</h2>
+          <p>В Visiology-версии паттерна границы текущих и предыдущих накопленных окон материализованы в таблице <code>Date</code>. За счет этого меры остаются читаемыми и не зависят от неподдерживаемых табличных фильтров на базе функций временной аналитики.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="note">
+            <p><strong>Календарь должен быть стандартным.</strong> Год начинается 1 января, кварталы - в январе, апреле, июле и октябре, месяц является календарным месяцем.</p>
+          </article>
+          <article class="note">
+            <p><strong>Фильтр окна снимает текущие фильтры с календаря.</strong> Меры строят собственный диапазон через <code>FILTER ( ALL ( 'Date' ), ... )</code>, поэтому календарные атрибуты нужно использовать осознанно.</p>
+          </article>
+          <article class="note">
+            <p><strong>Пустое значение возвращается явно.</strong> Для пустого результата используется <code>DIVIDE ( 0, 0 )</code>. Так визуализация не получает ноль там, где значения быть не должно.</p>
+          </article>
+          <article class="note">
+            <p><strong>Поведение на концах месяцев фиксируется в календаре.</strong> Сдвиги на месяц и квартал лучше готовить в <code>Date</code> заранее, особенно если в модели есть даты на концах месяцев.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <a href="../../../index.html">К списку паттернов</a>
+    </div>
+  </footer>
+</body>
+</html>

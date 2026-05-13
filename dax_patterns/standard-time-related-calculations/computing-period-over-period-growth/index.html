@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Рост к предыдущему периоду - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .mini-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 780px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 164px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre + p,
+    p + pre {
+      margin-top: 16px;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 362px);
+        margin-left: 14px;
+        margin-right: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Стандартные расчеты по времени</span>
+          <h1>Рост к<br>предыдущему<br>периоду</h1>
+          <p class="lead">Паттерн показывает, как сравнить текущий год, квартал или месяц с сопоставимым прошлым периодом и не исказить результат, когда последний период еще не завершен.</p>
+          <div class="hero-points" aria-label="Ключевые сравнения">
+            <span>YOY</span>
+            <span>QOQ</span>
+            <span>MOM</span>
+            <span>адаптивный POP</span>
+            <span>неполные периоды</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема сравнения периодов">
+          <h2>Честная база сравнения</h2>
+          <p class="chart-note">Если текущий август содержит продажи только до 15 числа, предыдущий месяц, квартал или год тоже обрезается до эквивалентной даты.</p>
+          <svg class="mini-chart" viewBox="0 0 420 260" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Схема period-over-period сравнения</title>
+            <desc id="chart-desc">Иллюстрация текущего неполного периода и сопоставимого предыдущего периода.</desc>
+            <rect x="0" y="0" width="420" height="260" rx="8" fill="#ffffff"></rect>
+            <g stroke="#e4e8ef" stroke-width="1">
+              <line x1="44" y1="70" x2="382" y2="70"></line>
+              <line x1="44" y1="130" x2="382" y2="130"></line>
+              <line x1="44" y1="190" x2="382" y2="190"></line>
+            </g>
+            <g font-family="Roboto, Arial, sans-serif" font-size="13" fill="#5e6673">
+              <text x="44" y="42">текущий период</text>
+              <text x="44" y="112">предыдущий период</text>
+              <text x="44" y="222">будущие даты</text>
+            </g>
+            <rect x="160" y="55" width="112" height="30" rx="8" fill="#2f4eff"></rect>
+            <rect x="272" y="55" width="74" height="30" rx="8" fill="#dfe3ea"></rect>
+            <rect x="160" y="115" width="112" height="30" rx="8" fill="#0f8f73"></rect>
+            <rect x="272" y="115" width="74" height="30" rx="8" fill="#dfe3ea"></rect>
+            <rect x="160" y="175" width="186" height="30" rx="8" fill="#eef1f6"></rect>
+            <line x1="272" y1="47" x2="272" y2="154" stroke="#ffc106" stroke-width="4" stroke-linecap="round"></line>
+            <g font-family="Roboto, Arial, sans-serif" font-size="12" font-weight="500">
+              <text x="190" y="75" fill="#ffffff">1-15 авг.</text>
+              <text x="188" y="135" fill="#ffffff">1-15 июля</text>
+              <text x="286" y="75" fill="#5e6673">16-31</text>
+              <text x="286" y="135" fill="#5e6673">16-31</text>
+              <text x="178" y="195" fill="#5e6673">результат скрывается</text>
+            </g>
+            <g fill="#5e6673" font-family="Roboto, Arial, sans-serif" font-size="12">
+              <text x="280" y="35">край фактов</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span style="color:#2f4eff"><i></i>Sales Amount</span>
+            <span style="color:#0f8f73"><i></i>Sales PP</span>
+            <span style="color:#b98b00"><i></i>DateWithSales</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн нужен для отчетов, где пользователь оценивает динамику относительно сопоставимого прошлого периода, а не просто смотрит сумму за выбранные даты.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Аддитивные показатели, которые корректно суммируются по времени: продажи, выручка, количество заказов, объем операций. Модель использует обычный календарь и явную таблицу <code>Date</code> с одной строкой на каждый день.</p>
+          </article>
+          <article class="card stop">
+            <h3>Лучше выбрать другой подход</h3>
+            <p>Нестандартные недели, календарь 4-4-5, плавающий финансовый календарь, сравнение только по рабочим дням или метрики, которые нельзя сравнивать простой разницей сумм. Для таких правил календарь и формулы нужно проектировать отдельно.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Текущий период сравнивается с окном той же длины и позиции в прошлом: год назад, квартал назад или месяц назад. Затем считается абсолютный и процентный рост.</p>
+        </div>
+        <div class="flow" aria-label="Логика period-over-period">
+          <article class="step">
+            <h3>Определить текущий контекст</h3>
+            <p>Визуализация задает видимый год, квартал или месяц через атрибуты таблицы <code>Date</code>.</p>
+          </article>
+          <article class="step">
+            <h3>Сдвинуть окно назад</h3>
+            <p>Колонки <code>PY</code>, <code>PQ</code> и <code>PM Day Index</code> хранят границы эквивалентных прошлых периодов.</p>
+          </article>
+          <article class="step">
+            <h3>Обрезать неполный период</h3>
+            <p><code>DateWithSales</code> не дает сравнивать 15 дней текущего периода с полным предыдущим периодом.</p>
+          </article>
+          <article class="step">
+            <h3>Выбрать нужную меру</h3>
+            <p><code>Sales POP</code> переключается между <code>YOY</code>, <code>QOQ</code> и <code>MOM</code> по текущей детализации даты.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Для стандартных расчетов нужна непрерывная календарная таблица. Таблица фактов <code>Sales</code> связывается с ней по дате заказа, а расчетные границы прошлых периодов заранее подготовлены в <code>Date</code>.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Колонки модели данных">
+          <table>
+            <thead>
+              <tr>
+                <th>Колонка</th>
+                <th>Зачем нужна</th>
+                <th>Как формируется</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date[Date]</code></td>
+                <td>Дневной ключ календаря и сторона связи с <code>Sales[Order Date]</code>.</td>
+                <td>Одна строка на каждый день нужного диапазона без пропусков.</td>
+              </tr>
+              <tr>
+                <td><code>Date Key</code>, <code>Date Label</code></td>
+                <td>Технический ключ и пользовательская дневная подпись.</td>
+                <td><code>Date Key</code> хранится как <code>YYYYMMDD</code>, подпись сортируется по ключу.</td>
+              </tr>
+              <tr>
+                <td><code>Year</code>, <code>Year Quarter</code>, <code>Year Month</code></td>
+                <td>Календарные уровни для матриц, графиков и фильтров.</td>
+                <td>Строятся из даты; текстовые подписи сортируются по техническим ключам.</td>
+              </tr>
+              <tr>
+                <td><code>Year Quarter Key</code>, <code>Year Month Key</code></td>
+                <td>Ключи сортировки и определения уровня для adaptive POP-мер.</td>
+                <td>Например, <code>20253</code> для третьего квартала 2025 года и <code>202508</code> для августа 2025.</td>
+              </tr>
+              <tr>
+                <td><code>Day Index</code></td>
+                <td>Непрерывная числовая шкала дней для фильтра окна.</td>
+                <td>Последовательный номер дня в таблице <code>Date</code>.</td>
+              </tr>
+              <tr>
+                <td><code>DateWithSales</code></td>
+                <td>Отделяет даты, которые уже могут иметь факты, от будущих дат.</td>
+                <td><code>1</code>, если дата не позже последней даты с продажами; иначе <code>0</code>.</td>
+              </tr>
+              <tr>
+                <td><code>PY Day Index</code>, <code>PQ Day Index</code>, <code>PM Day Index</code></td>
+                <td>Начальные границы окон предыдущего года, квартала и месяца.</td>
+                <td>Для каждой даты содержат индекс сопоставимой даты в прошлом периоде.</td>
+              </tr>
+              <tr>
+                <td><code>PY Comparable Day Index</code>, <code>PQ Comparable Day Index</code>, <code>PM Comparable Day Index</code></td>
+                <td>Верхние границы сопоставимого прошлого окна с учетом последней даты с фактами.</td>
+                <td>Для будущих дат получают техническое низкое значение, чтобы мера вернула blank.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Order Date]</code>, <code>Sales[Order Day Index]</code>, <code>Sales[Amount]</code></td>
+                <td>Дата заказа, ее дневной индекс и сумма продажи.</td>
+                <td><code>Order Date</code> связан с <code>Date[Date]</code>; <code>Order Day Index</code> повторяет индекс даты заказа.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Минимальные требования к модели">
+          <span>даты без пропусков</span>
+          <span>связь Sales -> Date</span>
+          <span>григорианские месяцы и кварталы</span>
+          <span>сдвинутые окна в Date</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>Физическая колонка факта называется <code>Sales[Amount]</code>, а пользовательская мера - <code>Sales Amount</code>. Так имя меры не конфликтует с именем колонки.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Базовая мера и контроль будущих дат</summary>
+            <div class="details-body">
+              <p><code>Sales Amount</code> показывает текущую сумму продаж. <code>ShowValueForDates</code> - техническая мера: она возвращает <code>1</code>, если выбранный период начинается не позже последней даты с продажами, и blank для будущих периодов.</p>
+              <pre><code>Sales Amount :=
+SUM ( Sales[Amount] )
+
+ShowValueForDates :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    1,
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Предыдущие периоды: <code>Sales PY</code>, <code>Sales PQ</code>, <code>Sales PM</code></summary>
+            <div class="details-body">
+              <p><code>Sales PY</code> берет сопоставимый период годом ранее, <code>Sales PQ</code> - в предыдущем квартале, <code>Sales PM</code> - в предыдущем месяце. Все три меры используют заранее подготовленные границы и скрывают будущие даты.</p>
+              <pre><code>Sales PY :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MIN ( 'Date'[PY Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PY Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales PQ :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MIN ( 'Date'[PQ Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PQ Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)
+
+Sales PM :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] >= MIN ( 'Date'[PM Day Index] ),
+                'Date'[Day Index] &lt;= MAX ( 'Date'[PM Comparable Day Index] )
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+              <p>Если в модели оставлен контрольный вариант <code>Sales PY (2)</code>, он должен совпадать с <code>Sales PY</code>. Для пользовательского отчета обычно достаточно основной меры <code>Sales PY</code>.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Рост к прошлому периоду: <code>YOY</code>, <code>QOQ</code>, <code>MOM</code></summary>
+            <div class="details-body">
+              <p>Абсолютный рост считается как текущий период минус предыдущий. Процентный рост делит эту разницу на значение предыдущего периода.</p>
+              <pre><code>Sales YOY :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales Amount] ),
+        ISBLANK ( Sales[Sales PY] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales Amount] - Sales[Sales PY]
+)
+
+Sales YOY % :=
+DIVIDE (
+    Sales[Sales YOY],
+    Sales[Sales PY]
+)
+
+Sales QOQ :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales Amount] ),
+        ISBLANK ( Sales[Sales PQ] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales Amount] - Sales[Sales PQ]
+)
+
+Sales QOQ % :=
+DIVIDE (
+    Sales[Sales QOQ],
+    Sales[Sales PQ]
+)
+
+Sales MOM :=
+IF (
+    OR (
+        ISBLANK ( Sales[Sales Amount] ),
+        ISBLANK ( Sales[Sales PM] )
+    ),
+    DIVIDE ( 0, 0 ),
+    Sales[Sales Amount] - Sales[Sales PM]
+)
+
+Sales MOM % :=
+DIVIDE (
+    Sales[Sales MOM],
+    Sales[Sales PM]
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Adaptive POP: <code>Sales PP</code>, <code>Sales POP</code>, <code>Sales POP %</code></summary>
+            <div class="details-body">
+            <p><code>Sales PP</code> возвращает значение предыдущего периода, <code>Sales POP</code> - абсолютный рост, <code>Sales POP %</code> - процентный рост. Выбор годовой, квартальной или месячной логики зависит от того, какой уровень дат остался в текущем контексте.</p>
+              <pre><code>Sales PP :=
+SWITCH (
+    TRUE (),
+    MIN ( 'Date'[Year Month Key] ) = MAX ( 'Date'[Year Month Key] ), Sales[Sales PM],
+    MIN ( 'Date'[Year Quarter Key] ) = MAX ( 'Date'[Year Quarter Key] ), Sales[Sales PQ],
+    MIN ( 'Date'[Year] ) = MAX ( 'Date'[Year] ), Sales[Sales PY],
+    DIVIDE ( 0, 0 )
+)
+
+Sales POP :=
+SWITCH (
+    TRUE (),
+    MIN ( 'Date'[Year Month Key] ) = MAX ( 'Date'[Year Month Key] ), Sales[Sales MOM],
+    MIN ( 'Date'[Year Quarter Key] ) = MAX ( 'Date'[Year Quarter Key] ), Sales[Sales QOQ],
+    MIN ( 'Date'[Year] ) = MAX ( 'Date'[Year] ), Sales[Sales YOY],
+    DIVIDE ( 0, 0 )
+)
+
+Sales POP % :=
+SWITCH (
+    TRUE (),
+    MIN ( 'Date'[Year Month Key] ) = MAX ( 'Date'[Year Month Key] ), Sales[Sales MOM %],
+    MIN ( 'Date'[Year Quarter Key] ) = MAX ( 'Date'[Year Quarter Key] ), Sales[Sales QOQ %],
+    MIN ( 'Date'[Year] ) = MAX ( 'Date'[Year] ), Sales[Sales YOY %],
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Главный риск в period-over-period анализе - сравнить неполный период с полным. Этот паттерн строит сопоставимое окно, поэтому значение предыдущего периода может быть меньше полного итога месяца, квартала или года.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card accent">
+            <h3>Первый период остается пустым</h3>
+            <p>У первого года нет предыдущего года, у первого месяца нет предыдущего месяца. В таких строках предыдущий период, рост и процент роста возвращают blank.</p>
+          </article>
+          <article class="card accent">
+            <h3>Неполный август сравнивается с частью прошлого</h3>
+            <p>Если факты есть до 15 августа, месячное сравнение берет 1-15 июля, квартальное - сопоставимую часть предыдущего квартала, годовое - 1-15 августа прошлого года.</p>
+          </article>
+          <article class="card accent">
+            <h3>Будущие периоды скрываются</h3>
+            <p>Сентябрь или четвертый квартал не должны показывать хвост предыдущих значений, если фактов там еще нет. Для таких периодов меры возвращают blank.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">!</span>
+          <p><strong>Процент роста читается от предыдущего периода.</strong> <code>Sales POP %</code> делит разницу на <code>Sales PP</code>. Если предыдущий период пустой или равен нулю, процент тоже не стоит интерпретировать как обычное число.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Визуальные разрезы</h2>
+          <p>POP-меры хорошо работают, когда визуализация явно показывает календарный уровень: год, квартал или месяц. Дополнительные бизнес-фильтры можно применять поверх календаря.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работает</h3>
+            <ul>
+              <li>Матрица с уровнями <code>Year</code>, <code>Year Quarter</code>, <code>Year Month</code>.</li>
+              <li>Отдельные таблицы или графики для <code>Sales YOY</code>, <code>Sales QOQ</code> и <code>Sales MOM</code>, когда нужен фиксированный тип сравнения.</li>
+              <li><code>Sales PP</code>, <code>Sales POP</code> и <code>Sales POP %</code> в визуализациях, где выбран ровно один календарный уровень.</li>
+              <li>Фильтры по товару, региону, каналу продаж или клиентскому сегменту, если бизнес ожидает сравнение внутри выбранного сегмента.</li>
+            </ul>
+          </article>
+
+          <article class="card stop">
+            <h3>Может вводить в заблуждение</h3>
+            <ul>
+              <li>Итог по нескольким годам без выбранного уровня дат: адаптивные POP-меры возвращают blank, потому что неясно, с каким периодом сравнивать общий итог.</li>
+              <li>Разрез по дню недели, признаку рабочего дня или другой календарной метке, если пользователь ожидает сравнение только внутри этой метки. Окно паттерна остается календарным.</li>
+              <li>Фильтр, который оставляет один месяц внутри годовой строки: адаптивная POP-мера может выбрать месячную логику, потому что видит один <code>Year Month Key</code>.</li>
+              <li>Сравнение нестандартных периодов, которые не совпадают с календарным месяцем, кварталом или годом.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Практические условия реализации</h2>
+          <p>В Visiology-версии паттерна сдвинутые окна материализованы в таблице <code>Date</code>. За счет этого меры остаются читаемыми, а результат стабильно проверяется в дашборде.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="note">
+            <p><strong>Календарь должен быть стандартным.</strong> Год начинается 1 января, кварталы - в январе, апреле, июле и октябре, месяц является календарным месяцем.</p>
+          </article>
+          <article class="note">
+            <p><strong>Фильтр окна снимает текущие фильтры с календаря.</strong> Меры строят собственный диапазон через <code>FILTER ( ALL ( 'Date' ), ... )</code>, поэтому календарные атрибуты нужно использовать осознанно.</p>
+          </article>
+          <article class="note">
+            <p><strong>Blank возвращается явно.</strong> Для пустого результата используется <code>DIVIDE ( 0, 0 )</code>. Так визуализация не получает ноль там, где значения быть не должно.</p>
+          </article>
+          <article class="note">
+            <p><strong>Адаптивный POP не заменяет явный выбор меры.</strong> Если отчет всегда сравнивает месяцы, проще и понятнее показать <code>Sales MOM</code> и <code>Sales MOM %</code> напрямую.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <a href="../../../index.html">К списку паттернов</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero,
+    .content {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      padding: 92px 0 70px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .content {
+      padding: 0 0 100px;
+    }
+
+    h2 {
+      margin: 0 0 22px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+      letter-spacing: 0;
+    }
+
+    .section {
+      padding: 58px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      min-height: 210px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    .card p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero,
+      .content {
+        width: min(100% - 28px, 1080px);
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 18px 0;
+      }
+
+      .hero {
+        padding: 58px 0 48px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      h2 {
+        font-size: 30px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./">Visiology DAX Patterns</a>
+      <a class="pill" href="dax_patterns/standard-time-related-calculations/computing-period-to-date-totals/">Открыть первый материал</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Учебные материалы по DAX для Visiology</span>
+      <h1>Библиотека DAX-паттернов</h1>
+      <p class="lead">Статические страницы с практическими паттернами: зачем нужен расчет, какая модель данных требуется, какие меры создать и как читать результат в дашборде.</p>
+    </section>
+
+    <section class="content">
+      <div class="section">
+        <h2>Стандартные расчеты по времени</h2>
+        <div class="cards">
+          <a class="card" href="dax_patterns/standard-time-related-calculations/computing-period-to-date-totals/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Computing period-to-date totals</h3>
+            <p>Накопительные итоги с начала года, финансового года, квартала и месяца с контролем будущих периодов.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/computing-period-over-period-growth/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Computing period-over-period growth</h3>
+            <p>Сравнение текущего года, квартала или месяца с сопоставимым прошлым периодом и расчет роста.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/computing-period-to-date-growth/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Computing period-to-date growth</h3>
+            <p>Сравнение накопленного года, квартала или месяца с такой же пройденной частью прошлого периода.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/comparing-period-to-date-with-previous-full-period/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Comparing period-to-date with previous full period</h3>
+            <p>Сравнение текущего накопленного результата с полным предыдущим годом, кварталом или месяцем как фиксированным ориентиром.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/using-moving-annual-total-calculations/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Using moving annual total calculations</h3>
+            <p>Скользящая годовая сумма за последние 12 месяцев, ее значение годом ранее и рост MAT для чтения устойчивого тренда продаж.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/moving-averages/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Moving averages</h3>
+            <p>Скользящее среднее за 30 дней, 3 месяца и 1 год для сглаживания временного ряда и чтения тренда.</p>
+          </a>
+          <a class="card" href="dax_patterns/standard-time-related-calculations/filtering-other-date-attributes/">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Filtering other date attributes</h3>
+            <p>Корректный YTD и другие накопительные расчеты в разрезе дополнительных атрибутов даты: дня недели, рабочего дня, праздника или сезона.</p>
+          </a>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Накопительный итог</h2>
+        <div class="cards">
+          <a class="card" href="dax_patterns/cumulative-total/basic-scenario/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Basic scenario</h3>
+            <p>Сквозной накопительный итог с начала истории до текущей даты, контроль будущих периодов и вариант для будних дней.</p>
+          </a>
+          <a class="card" href="dax_patterns/cumulative-total/cumulative-total-on-columns-that-can-be-sorted/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Cumulative total on columns that can be sorted</h3>
+            <p>Накопительный итог по бизнес-порядку категорий: классы клиентов, сортировочный ключ и чтение результата при фильтрации.</p>
+          </a>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Таблица параметров</h2>
+        <div class="cards">
+          <a class="card" href="dax_patterns/parameter-table/changing-the-scale-of-a-measure/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Changing the scale of a measure</h3>
+            <p>Переключатель масштаба для одной или нескольких мер: исходные единицы, тысячи и миллионы через несвязанную таблицу параметров.</p>
+          </a>
+          <a class="card" href="dax_patterns/parameter-table/multiple-independent-parameters/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Multiple independent parameters</h3>
+            <p>Сценарный расчет с двумя независимыми параметрами: порог количества заказа и процент скидки без фильтрации фактов.</p>
+          </a>
+          <a class="card" href="dax_patterns/parameter-table/multiple-dependent-parameters/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Multiple dependent parameters</h3>
+            <p>Сценарный расчет с зависимыми параметрами, где выбранный порог количества ограничивает доступные ставки скидки.</p>
+          </a>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Related distinct count</h2>
+        <div class="cards">
+          <a class="card" href="dax_patterns/related-distinct-count/pattern-description/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Pattern description</h3>
+            <p>Подсчет уникальных значений справочника, которые связаны с продажами, поступлениями, обеими факт-таблицами или хотя бы одной из них.</p>
+          </a>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Полуаддитивные расчеты</h2>
+        <div class="cards">
+          <a class="card" href="dax_patterns/semi-additive-calculations/first-and-last-date/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>First and last date</h3>
+            <p>Баланс на первой или последней календарной дате периода для остатков и других показателей, которые нельзя суммировать по времени.</p>
+          </a>
+          <a class="card" href="dax_patterns/semi-additive-calculations/first-and-last-date-with-data/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>First and last date with data</h3>
+            <p>Баланс на первой или последней дате периода с данными, с одной общей датой расчета для всех клиентов в строке отчета.</p>
+          </a>
+          <a class="card" href="dax_patterns/semi-additive-calculations/first-and-last-date-by-customer/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>First and last date by customer</h3>
+            <p>Баланс на последней дате каждого клиента внутри периода и вариант с переносом последнего известного значения вперед.</p>
+          </a>
+          <a class="card" href="dax_patterns/semi-additive-calculations/opening-and-closing-balance/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Opening and closing balance</h3>
+            <p>Начальный и конечный баланс периода: строгие календарные границы и вариант с переносом последнего известного значения по клиентам.</p>
+          </a>
+          <a class="card" href="dax_patterns/semi-additive-calculations/growth-in-period/index.html">
+            <span class="status"><span class="dot"></span>Готово</span>
+            <h3>Growth in period</h3>
+            <p>Изменение баланса между началом и концом выбранного периода: строгие календарные границы и вариант с переносом последнего известного значения.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

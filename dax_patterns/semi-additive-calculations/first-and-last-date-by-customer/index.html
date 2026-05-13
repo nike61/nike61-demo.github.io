@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Последняя дата по клиенту - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p,
+    .step p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .customer-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 820px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .blue {
+      border-top: 6px solid var(--blue);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 190px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(1120px, calc(100% - 28px));
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: normal;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Полуаддитивные расчеты</span>
+          <h1>Последняя дата по клиенту</h1>
+          <p class="lead">Паттерн показывает конечное состояние периода, когда у каждого клиента, счета или другой сущности своя последняя дата снимка. Итог строится как сумма последних доступных значений каждой сущности, а не как баланс на одной общей дате.</p>
+          <div class="hero-points" aria-label="Ключевые свойства паттерна">
+            <span>индивидуальная дата клиента</span>
+            <span>факт снимков</span>
+            <span>итог как сумма сущностей</span>
+            <span>blank не равен нулю</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема последних дат по клиентам">
+          <h2>Главное правило</h2>
+          <p class="chart-note">В Q4 2020 у Katie Jordan нет строк внутри квартала. Обычная мера оставляет ее пустой, а вариант с переносом вперед берет сентябрьский баланс.</p>
+          <svg class="customer-chart" viewBox="0 0 420 300" role="img" aria-labelledby="customer-chart-title customer-chart-desc">
+            <title id="customer-chart-title">Последние даты для клиентов в Q4 2020</title>
+            <desc id="customer-chart-desc">Диаграмма показывает, что Luis Bonifaz и Maurizio Macagno имеют последние даты в ноябре, а Katie Jordan имеет последнюю дату в сентябре за пределами Q4.</desc>
+            <rect x="0" y="0" width="420" height="300" rx="8" fill="#ffffff"></rect>
+            <rect x="58" y="44" width="282" height="190" rx="8" fill="#f5f6f8" stroke="#dfe3ea"></rect>
+            <g font-family="Roboto, Arial, sans-serif">
+              <text x="28" y="32" fill="#111111" font-size="15" font-weight="700">Контекст: Q4 2020</text>
+              <text x="58" y="260" fill="#5e6673" font-size="13">1 окт</text>
+              <text x="176" y="260" fill="#5e6673" font-size="13">15 ноя</text>
+              <text x="296" y="260" fill="#5e6673" font-size="13">31 дек</text>
+              <text x="58" y="284" fill="#111111" font-size="15" font-weight="700">Итог: 3 663</text>
+              <text x="188" y="284" fill="#0f8f73" font-size="15" font-weight="700">С переносом: 6 475</text>
+            </g>
+            <line x1="58" y1="96" x2="340" y2="96" stroke="#dfe3ea" stroke-width="2"></line>
+            <line x1="58" y1="148" x2="340" y2="148" stroke="#dfe3ea" stroke-width="2"></line>
+            <line x1="58" y1="200" x2="340" y2="200" stroke="#dfe3ea" stroke-width="2"></line>
+            <g font-family="Roboto, Arial, sans-serif" font-size="13" fill="#252a31">
+              <text x="76" y="88">Katie</text>
+              <text x="76" y="140">Luis</text>
+              <text x="76" y="192">Maurizio</text>
+            </g>
+            <line x1="126" y1="96" x2="312" y2="96" stroke="#dfe3ea" stroke-width="3" stroke-linecap="round"></line>
+            <line x1="126" y1="148" x2="312" y2="148" stroke="#dfe3ea" stroke-width="3" stroke-linecap="round"></line>
+            <line x1="126" y1="200" x2="312" y2="200" stroke="#dfe3ea" stroke-width="3" stroke-linecap="round"></line>
+            <circle cx="116" cy="96" r="9" fill="#0f8f73"></circle>
+            <text x="128" y="101" fill="#0f8f73" font-family="Roboto, Arial, sans-serif" font-size="13" font-weight="700">2 812, но сентябрь</text>
+            <circle cx="234" cy="148" r="11" fill="#ffc106" stroke="#111111" stroke-width="2"></circle>
+            <text x="252" y="153" fill="#111111" font-family="Roboto, Arial, sans-serif" font-size="13" font-weight="700">1 813</text>
+            <circle cx="252" cy="200" r="11" fill="#ffc106" stroke="#111111" stroke-width="2"></circle>
+            <text x="270" y="205" fill="#111111" font-family="Roboto, Arial, sans-serif" font-size="13" font-weight="700">1 850</text>
+            <path d="M116 106 C116 124, 116 160, 116 220" fill="none" stroke="#0f8f73" stroke-width="2" stroke-dasharray="5 5"></path>
+            <text x="128" y="224" fill="#0f8f73" font-family="Roboto, Arial, sans-serif" font-size="13">перенос вперед</text>
+          </svg>
+          <div class="legend">
+            <span style="color:#b98b00"><i></i>последняя дата внутри периода</span>
+            <span style="color:#0f8f73"><i></i>последнее известное значение</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Какую задачу решает</h2>
+          <p>Баланс счета, складской запас, задолженность, лимит или численность описывают состояние на дату. Такие показатели можно складывать по клиентам или подразделениям, но нельзя складывать по всем датам квартала.</p>
+        </div>
+        <div class="grid three">
+          <article class="card check">
+            <h3>Разные даты снимков</h3>
+            <p>Клиенты обновляются не одновременно: у одного последняя строка в сентябре, у другого в середине ноября, у третьего ближе к концу месяца.</p>
+          </article>
+          <article class="card accent">
+            <h3>Итог по сущностям</h3>
+            <p>Годовой или квартальный итог должен складывать последние значения каждого клиента в его собственную дату, а не брать только самую позднюю дату во всем факте.</p>
+          </article>
+          <article class="card blue">
+            <h3>Понятные пустые значения</h3>
+            <p>Если у клиента нет снимка внутри периода, обычная мера возвращает blank. Это не ноль, а отсутствие подходящей строки по выбранному правилу.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн подходит для разреженных снимков состояния, где сущности живут в одном отчете, но получают новые значения в разные даты. Перед внедрением важно договориться, какую сущность считать единицей расчета.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Факт хранит балансы клиентов, счетов, складов или договоров. В строке отчета нужен последний снимок каждой сущности внутри месяца, квартала или года, а общий итог должен быть суммой этих снимков.</p>
+          </article>
+          <article class="card stop">
+            <h3>Нужен другой вариант</h3>
+            <p>Не используйте этот расчет для продаж, оплат и других потоковых показателей. Если дата должна быть единой для всей строки отчета, нужен паттерн общей последней даты с данными. Если отсутствие строки означает ноль, это отдельное правило подготовки данных.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Для каждой пары период и клиент модель заранее хранит две даты: последнюю дату внутри периода и последнюю дату на любую дату до конца периода. Меры остаются простыми, а сложная часть становится явной частью модели данных.</p>
+        </div>
+        <div class="flow" aria-label="Логика расчета последней даты по клиенту">
+          <article class="step">
+            <h3>Задать период</h3>
+            <p>Строка отчета выбирает месяц, квартал, год или подготовленный общий диапазон из таблицы <code>Period</code>.</p>
+          </article>
+          <article class="step">
+            <h3>Разложить по клиентам</h3>
+            <p>Для каждого клиента отдельно ищется максимальная дата снимка в выбранных границах периода.</p>
+          </article>
+          <article class="step">
+            <h3>Взять баланс на дату</h3>
+            <p>Если строка найдена, во вспомогательную таблицу попадает сумма баланса клиента на этой последней дате.</p>
+          </article>
+          <article class="step">
+            <h3>Сложить результат</h3>
+            <p>Итог суммирует подготовленные значения по клиентам. Поэтому CY 2020 возвращает 6,475.00, а не баланс одной общей даты.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Проверенная реализация использует обычный факт снимков и вспомогательную таблицу на гранулярности <code>Period x Customer</code>. Именно она фиксирует бизнес-правило выбора индивидуальной последней даты.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Основные таблицы модели">
+          <table>
+            <thead>
+              <tr>
+                <th>Таблица</th>
+                <th>Назначение</th>
+                <th>Ключевые поля</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date</code></td>
+                <td>Непрерывный календарь для исходных снимков. Нужен для дат факта, подписей месяцев, кварталов, лет и корректной сортировки.</td>
+                <td><code>Date</code>, <code>Date Key</code>, подписи периода, ключи сортировки.</td>
+              </tr>
+              <tr>
+                <td><code>Customer</code></td>
+                <td>Справочник сущностей, по которым баланс аддитивен. В примере это клиенты, но в вашей модели это может быть счет, договор или склад.</td>
+                <td><code>Customer ID</code>, <code>Customer</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Balances</code></td>
+                <td>Разреженный факт со снимками состояния на дату для конкретного клиента.</td>
+                <td><code>Date</code>, <code>Date Key</code>, <code>Customer ID</code>, <code>Amount</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Period</code></td>
+                <td>Подготовленные отчетные периоды: месяцы, кварталы, годы и общий диапазон примера. Таблица задает границы поиска.</td>
+                <td><code>Period Key</code>, <code>Period Label</code>, <code>Period Start</code>, <code>Period End</code>, <code>Period Sort</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Customer Period Balances</code></td>
+                <td>Вспомогательный факт с одной строкой на период и клиента. Хранит найденные даты и суммы, которые затем складывают меры.</td>
+                <td><code>Period Key</code>, <code>Customer ID</code>, <code>Last Date</code>, <code>Last Amount</code>, <code>Last Ever Date</code>, <code>Last Ever Amount</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Связи модели">
+          <span><code>Balances[Date]</code> -> <code>Date[Date]</code></span>
+          <span><code>Balances[Customer ID]</code> -> <code>Customer[Customer ID]</code></span>
+          <span><code>Customer Period Balances[Period Key]</code> -> <code>Period[Period Key]</code></span>
+          <span><code>Customer Period Balances[Customer ID]</code> -> <code>Customer[Customer ID]</code></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>В исходной логике расчет сначала строит виртуальную таблицу последних дат по клиентам, а затем применяет эти даты к факту. В Visiology удобнее заранее материализовать этот шаг во вспомогательном факте, поэтому меры остаются короткими и прозрачными.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Balance LastDateByCustomer</summary>
+            <div class="details-body">
+              <p>Показывает баланс на последней дате каждого клиента внутри текущего периода. Если у клиента нет строки внутри периода, его вклад остается пустым.</p>
+              <pre><code>Balance LastDateByCustomer :=
+SUM ( 'Customer Period Balances'[Last Amount] )</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Balance LastDateByCustomerEver</summary>
+            <div class="details-body">
+              <p>Показывает последний известный баланс каждого клиента на дату не позже конца периода. Этот вариант переносит значение вперед, пока не появится новый снимок.</p>
+              <pre><code>Balance LastDateByCustomerEver :=
+SUM ( 'Customer Period Balances'[Last Ever Amount] )</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <div class="callout-mark">!</div>
+          <p><strong>Важно:</strong> если клиент содержит несколько счетов с разными датами обновления, проверьте бизнес-смысл агрегации. Возможно, последнюю дату нужно искать не по клиенту, а по счету, договору или другой более детальной сущности.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Обе меры складываются по клиентам, но отличаются границей поиска даты. Обычная мера смотрит только внутрь периода, а вариант <code>Ever</code> смотрит на всю историю до конца периода.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Примеры результата по периодам">
+          <table>
+            <thead>
+              <tr>
+                <th>Контекст</th>
+                <th>Что выбирает расчет</th>
+                <th>Balance LastDateByCustomer</th>
+                <th>Balance LastDateByCustomerEver</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Q3 2020, все клиенты</td>
+                <td>Для каждого клиента последняя дата внутри квартала - 2020-09-30.</td>
+                <td class="num">7,762.00</td>
+                <td class="num">7,762.00</td>
+              </tr>
+              <tr>
+                <td>October 2020, все клиенты</td>
+                <td>Katie Jordan не имеет октябрьской строки; Luis Bonifaz и Maurizio Macagno имеют снимки 2020-10-31.</td>
+                <td class="num">3,960.00</td>
+                <td class="num">6,772.00</td>
+              </tr>
+              <tr>
+                <td>November 2020, все клиенты</td>
+                <td>Luis Bonifaz берется на 2020-11-15, Maurizio Macagno - на 2020-11-18, Katie Jordan переносится только в варианте <code>Ever</code>.</td>
+                <td class="num">3,663.00</td>
+                <td class="num">6,475.00</td>
+              </tr>
+              <tr>
+                <td>December 2020, все клиенты</td>
+                <td>В декабре нет новых строк. Обычная мера пустая, а <code>Ever</code> возвращает последние известные балансы.</td>
+                <td class="num">blank</td>
+                <td class="num">6,475.00</td>
+              </tr>
+              <tr>
+                <td>CY 2020, все клиенты</td>
+                <td>Katie Jordan берется на 2020-09-30, Luis Bonifaz - на 2020-11-15, Maurizio Macagno - на 2020-11-18.</td>
+                <td class="num">6,475.00</td>
+                <td class="num">6,475.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Разрезы в дашборде</h2>
+          <p>Пользователь должен видеть и период, и сущность, по которой выбирается дата. Иначе итог легко принять за баланс на одной календарной дате, хотя он составлен из разных дат клиентов.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работают</h3>
+            <ul>
+              <li>Периоды из таблицы <code>Period</code>: месяц, квартал, год и общий подготовленный диапазон.</li>
+              <li>Клиент, счет, склад или договор из справочника сущностей, если вспомогательная таблица подготовлена на той же гранулярности.</li>
+              <li>Таблица, где рядом показаны <code>Balance LastDateByCustomer</code> и <code>Balance LastDateByCustomerEver</code>: так видно, переносится ли значение вперед.</li>
+              <li>Исходные снимки рядом с итогом: они помогают объяснить, почему в одном периоде у разных клиентов разные даты.</li>
+            </ul>
+          </article>
+          <article class="card accent">
+            <h3>Требуют пояснения</h3>
+            <ul>
+              <li>Произвольные интерактивные диапазоны дат: они корректны только если вспомогательный факт подготовлен на нужной детализации.</li>
+              <li>Сравнение клиентов с разной частотой обновления: blank означает отсутствие снимка внутри периода, а не нулевой баланс.</li>
+              <li>Итоги по кварталу и году: они пересчитывают последнюю дату на своем уровне, а не складывают видимые месячные строки.</li>
+              <li>Разрезы ниже выбранной сущности, например счет внутри клиента: для них нужна отдельная строка вспомогательного факта, иначе дата будет искаться слишком крупно.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Важные особые случаи</h2>
+          <p>Перед публикацией отчета согласуйте смысл отсутствующих строк и переноса вперед. Оба варианта могут быть правильными, но отвечают на разные бизнес-вопросы.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <h3>Q4 без Katie Jordan</h3>
+            <p>В <code>Balance LastDateByCustomer</code> Katie Jordan пустая в Q4 2020, потому что ее последняя строка 2020-09-30 находится вне квартала. Итог Q4 равен 3,663.00.</p>
+          </article>
+          <article class="card">
+            <h3>Перенос вперед</h3>
+            <p>В <code>Balance LastDateByCustomerEver</code> Q4 2020 включает сентябрьский баланс Katie Jordan 2,812.00. Поэтому итог квартала становится 6,475.00.</p>
+          </article>
+          <article class="card">
+            <h3>Разные ноябрьские даты</h3>
+            <p>В ноябре Luis Bonifaz использует 2020-11-15, а Maurizio Macagno - 2020-11-18. Итог складывает оба последних значения, хотя даты не совпадают.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <div class="callout-mark">!</div>
+          <p><strong>Практическое правило:</strong> используйте обычную меру, когда отсутствие снимка внутри периода должно оставаться пустым. Используйте вариант <code>Ever</code>, когда последний известный баланс считается актуальным до появления нового снимка.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <span>Полуаддитивные расчеты</span>
+    </div>
+  </footer>
+</body>
+</html>

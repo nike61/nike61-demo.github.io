@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Накопительный итог: базовый сценарий - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p,
+    .step p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .running-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 790px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .blue {
+      border-top: 6px solid var(--blue);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 176px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre + p,
+    p + pre {
+      margin-top: 16px;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Cumulative total</span>
+          <h1>Basic scenario</h1>
+          <p class="lead">Базовый накопительный итог показывает сумму всех операций от начала доступной истории до последней даты в текущей строке отчета. Он нужен, когда важно видеть не только оборот периода, но и накопленное состояние на дату.</p>
+          <div class="hero-points" aria-label="Ключевые свойства паттерна">
+            <span>сквозное накопление</span>
+            <span>Sales Amount RT</span>
+            <span>RT Weekdays</span>
+            <span>будущие даты пустые</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема накопительного итога">
+          <h2>Как читается итог</h2>
+          <p class="chart-note">Серые столбцы показывают продажи отдельных месяцев. Синяя линия складывает все месяцы от начала истории до текущей точки и не начинает счет заново в январе.</p>
+          <svg class="running-chart" viewBox="0 0 420 260" role="img" aria-labelledby="running-title running-desc">
+            <title id="running-title">Продажи и накопительный итог</title>
+            <desc id="running-desc">Столбцы показывают продажи по месяцам, линия показывает растущий накопительный итог.</desc>
+            <rect x="0" y="0" width="420" height="260" rx="8" fill="#ffffff"></rect>
+            <g stroke="#e4e8ef" stroke-width="1">
+              <line x1="48" y1="46" x2="48" y2="214"></line>
+              <line x1="48" y1="214" x2="382" y2="214"></line>
+              <line x1="48" y1="172" x2="382" y2="172"></line>
+              <line x1="48" y1="130" x2="382" y2="130"></line>
+              <line x1="48" y1="88" x2="382" y2="88"></line>
+            </g>
+            <g fill="#cbd2dc">
+              <rect x="65" y="146" width="23" height="68" rx="4"></rect>
+              <rect x="112" y="132" width="23" height="82" rx="4"></rect>
+              <rect x="159" y="137" width="23" height="77" rx="4"></rect>
+              <rect x="206" y="151" width="23" height="63" rx="4"></rect>
+              <rect x="253" y="174" width="23" height="40" rx="4"></rect>
+              <rect x="300" y="181" width="23" height="33" rx="4"></rect>
+              <rect x="347" y="164" width="23" height="50" rx="4"></rect>
+            </g>
+            <polyline points="76,146 123,102 170,74 217,58 264,50 311,45 358,40" fill="none" stroke="#2f4eff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <g fill="#5e6673" font-family="Roboto, Arial, sans-serif" font-size="12">
+              <text x="50" y="234">Jan</text>
+              <text x="145" y="234">Mar</text>
+              <text x="239" y="234">May</text>
+              <text x="333" y="234">Jul</text>
+              <text x="15" y="48">итог</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span style="color:#9aa4b2"><i></i>Sales Amount</span>
+            <span style="color:#2f4eff"><i></i>Sales Amount RT</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Какую задачу решает</h2>
+          <p>Обычная сумма в строке месяца отвечает на вопрос "сколько было в этом месяце". Накопительный итог отвечает на другой вопрос: "сколько уже набрано к концу этого месяца или дня".</p>
+        </div>
+        <div class="grid three">
+          <article class="card check">
+            <h3>Рост результата</h3>
+            <p>Пользователь видит, как общий объем продаж, списаний, поступлений или других операций растет от даты к дате.</p>
+          </article>
+          <article class="card accent">
+            <h3>Состояние из движений</h3>
+            <p>Для складских и финансовых сценариев состояние на дату можно получить из исходных транзакций, не создавая снимок на каждый день.</p>
+          </article>
+          <article class="card blue">
+            <h3>Контроль отсутствия фактов</h3>
+            <p>День без продаж может сохранить предыдущий накопленный итог, а будущий период должен остаться пустым, чтобы не создавать ложный хвост графика.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн подходит для аддитивных фактов, которые можно складывать по времени, и для отчетов, где накопление идет от начала истории до текущей видимой даты.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Продажи, выручка, количество операций, складские поступления и списания. Модель содержит полноценную таблицу <code>Date</code>, а факт связан с ней по дате операции.</p>
+          </article>
+          <article class="card stop">
+            <h3>Нужен другой подход</h3>
+            <p>Если итог должен сбрасываться на границе года, квартала или месяца, используйте period-to-date расчеты. Если показатель является снимком состояния, например остатком на конец дня, нужны полуаддитивные паттерны.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Мера заменяет текущий фильтр календаря на окно всех дат от начала таблицы <code>Date</code> до последней даты, видимой в строке отчета.</p>
+        </div>
+        <div class="flow" aria-label="Логика накопительного итога">
+          <article class="step">
+            <h3>Найти конечную дату</h3>
+            <p>Текущий контекст задает последнюю видимую дату через <code>MAX ( 'Date'[Day Index] )</code>.</p>
+          </article>
+          <article class="step">
+            <h3>Проверить факты</h3>
+            <p>Если первая дата строки позже последней даты с продажами, мера возвращает blank.</p>
+          </article>
+          <article class="step">
+            <h3>Построить окно</h3>
+            <p><code>FILTER ( ALL ( 'Date' ), ... )</code> оставляет все даты с индексом не больше конечного.</p>
+          </article>
+          <article class="step">
+            <h3>Посчитать сумму</h3>
+            <p>В новом окне вычисляется та же базовая мера <code>Sales Amount</code>.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Минимальная модель состоит из календаря и таблицы транзакций. Календарь должен быть непрерывным: одна строка на каждый день без пропусков.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Необходимые таблицы и колонки">
+          <table>
+            <thead>
+              <tr>
+                <th>Элемент</th>
+                <th>Зачем нужен</th>
+                <th>Важно при подготовке</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date[Date]</code></td>
+                <td>Календарная дата и ключ связи с фактом.</td>
+                <td>Уникальная дата в каждой строке, диапазон покрывает всю историю анализа.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Day Index]</code></td>
+                <td>Непрерывный числовой индекс дня для условий "меньше или равно".</td>
+                <td>Индекс растет на 1 каждый день и сортирует даты в естественном порядке.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Year Month]</code>, <code>Date[Date Label]</code></td>
+                <td>Подписи для месячной и дневной детализации в дашборде.</td>
+                <td>Текстовые подписи сортируются техническими ключами, без числовых префиксов в названии.</td>
+              </tr>
+              <tr>
+                <td><code>Date[Day of Week]</code>, <code>Date[Day of Week Sort]</code></td>
+                <td>Нужны, если пользователь анализирует будние дни отдельно от выходных.</td>
+                <td>Для расчета только по будним дням фильтр дня недели должен быть явно возвращен в окно накопления.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Order Date]</code></td>
+                <td>Дата операции и сторона связи <code>Sales -> Date</code>.</td>
+                <td>Связь строится с <code>Date[Date]</code>; тип и гранулярность дат должны совпадать.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Order Day Index]</code></td>
+                <td>Помогает найти последнюю дату, на которую есть продажи.</td>
+                <td>Значение соответствует <code>Date[Day Index]</code> для даты заказа.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Amount]</code></td>
+                <td>Аддитивная сумма, на базе которой строятся меры.</td>
+                <td>Колонка факта называется иначе, чем мера <code>Sales Amount</code>, чтобы не было конфликта имен.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Минимальные требования к модели">
+          <span>непрерывный календарь</span>
+          <span>одна дата операции</span>
+          <span>Sales -> Date</span>
+          <span>сортировка подписей</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>В Visiology формулы записаны без <code>VAR</code>. Вместо сравнения DateTime используется <code>Day Index</code>, а пустое значение для будущих периодов возвращается через <code>DIVIDE ( 0, 0 )</code>.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Базовая сумма и сквозной накопительный итог</summary>
+            <div class="details-body">
+              <p><code>Sales Amount</code> показывает продажи в текущем контексте. <code>Sales Amount RT</code> расширяет календарный фильтр до всех дат не позже последней видимой даты и поэтому накапливает сумму с начала истории.</p>
+              <pre><code>Sales Amount :=
+SUM ( Sales[Amount] )
+
+Sales Amount RT :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Накопление только по будним дням (<code>RT Weekdays</code>)</summary>
+            <div class="details-body">
+              <p>Обычная мера <code>Sales Amount RT</code> снимает фильтры с таблицы <code>Date</code>, поэтому выбор дня недели на той же таблице не ограничивает накопительное окно. <code>RT Weekdays</code> явно возвращает условие Monday-Friday через сортировочный номер дня недели.</p>
+              <pre><code>RT Weekdays :=
+IF (
+    MIN ( 'Date'[Day Index] )
+        &lt;= CALCULATE (
+            MAX ( Sales[Order Day Index] ),
+            REMOVEFILTERS ( 'Date' ),
+            REMOVEFILTERS ( Sales )
+        ),
+    CALCULATE (
+        SUM ( Sales[Amount] ),
+        FILTER (
+            ALL ( 'Date' ),
+            AND (
+                'Date'[Day Index] &lt;= MAX ( 'Date'[Day Index] ),
+                'Date'[Day of Week Sort] IN { 1, 2, 3, 4, 5 }
+            )
+        )
+    ),
+    DIVIDE ( 0, 0 )
+)</code></pre>
+              <p>Для произвольного выбора дней недели лучше не вшивать список значений в меру. Используйте отдельное измерение для такого атрибута или подготовьте бизнес-признак, например <code>Is Working Day</code>.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Накопительная мера зависит от последней видимой даты. На уровне месяца она показывает итог на конец месяца, на уровне дня - итог на конец дня.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Пример чтения накопительного итога">
+          <table>
+            <thead>
+              <tr>
+                <th>Период</th>
+                <th>Что показывает <code>Sales Amount</code></th>
+                <th>Что показывает <code>Sales Amount RT</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Январь</td>
+                <td>Продажи января.</td>
+                <td>Продажи января.</td>
+              </tr>
+              <tr>
+                <td>Февраль</td>
+                <td>Только продажи февраля.</td>
+                <td>Январь плюс февраль.</td>
+              </tr>
+              <tr>
+                <td>Март</td>
+                <td>Только продажи марта.</td>
+                <td>Январь, февраль и март.</td>
+              </tr>
+              <tr>
+                <td>Январь следующего года</td>
+                <td>Продажи этого января.</td>
+                <td>Все продажи с начала истории, включая прошлый год.</td>
+              </tr>
+              <tr>
+                <td>Будущий месяц после последней продажи</td>
+                <td>Пусто.</td>
+                <td>Пусто, а не повтор последнего накопленного значения.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">!</span>
+          <p><strong>Годовая граница не сбрасывает расчет.</strong> Это сквозной накопительный итог с начала истории. Если в январе нужен новый старт, используйте расчет с началом периода, например YTD.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Особые случаи</h2>
+          <p>Эти ситуации стоит проверить перед публикацией дашборда, потому что они чаще всего вызывают неверное чтение накопительной суммы.</p>
+        </div>
+        <div class="grid three">
+          <article class="card accent">
+            <h3>День без продаж</h3>
+            <p><code>Sales Amount</code> будет пустым, но <code>Sales Amount RT</code> может сохранить накопленный итог предыдущих дней.</p>
+          </article>
+          <article class="card accent">
+            <h3>Частично заполненный месяц</h3>
+            <p>Последний месяц остается видимым, если в нем уже есть продажи. Даты после последней продажи должны возвращать blank.</p>
+          </article>
+          <article class="card accent">
+            <h3>Фильтр дня недели</h3>
+            <p><code>Sales Amount</code> реагирует на выбор будних дней. <code>Sales Amount RT</code> его не сохраняет, а <code>RT Weekdays</code> сохраняет явно.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Визуальные разрезы</h2>
+          <p>Накопительный итог лучше всего читается на оси, где сохраняется естественный порядок дат и понятно, какая точка является конечной.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работает</h3>
+            <ul>
+              <li><code>Year Month</code> для помесячного роста накопленного результата.</li>
+              <li><code>Date Label</code> для дневного анализа и проверки дней без продаж.</li>
+              <li>Продукт, регион, канал продаж или клиентский сегмент как бизнес-фильтры поверх календаря.</li>
+              <li>Дни недели, если используется мера, которая явно сохраняет выбранные дни.</li>
+            </ul>
+          </article>
+
+          <article class="card stop">
+            <h3>Может ввести в заблуждение</h3>
+            <ul>
+              <li>Разрез только по дню недели для <code>Sales Amount RT</code>: мера снимает фильтры с <code>Date</code> и считает календарное окно.</li>
+              <li>Годовая таблица, если пользователь ожидает сброс на каждом новом году.</li>
+              <li>Карточка без подписи периода: она показывает итог на последнюю дату текущего контекста, а не самостоятельный тип показателя.</li>
+              <li>Будущие месяцы на графике, если blank заменяется нулем или последним известным значением.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Практические условия реализации</h2>
+          <p>Формула короткая, но ее смысл полностью зависит от календаря, связи с фактом и того, какие фильтры даты должны сохраняться.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="note">
+            <p><strong>Календарь задает начало истории.</strong> Если таблица <code>Date</code> начинается раньше нужного аналитического периода, итог будет накапливаться с более ранней даты.</p>
+          </article>
+          <article class="note">
+            <p><strong>Фильтр окна снимает фильтры с <code>Date</code>.</strong> Атрибуты той же таблицы, например день недели, нужно возвращать в расчет явно или выносить в отдельные измерения.</p>
+          </article>
+          <article class="note">
+            <p><strong><code>ALL</code> используется внутри <code>FILTER</code>.</strong> Такая форма строит таблицу дат для окна накопления и хорошо читается в пользовательской мере.</p>
+          </article>
+          <article class="note">
+            <p><strong>Пустое значение лучше нуля для будущих периодов.</strong> Blank не выглядит как падение продаж и не продолжает линию там, где фактов еще нет.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <a href="../../../index.html">К списку паттернов</a>
+    </div>
+  </footer>
+</body>
+</html>

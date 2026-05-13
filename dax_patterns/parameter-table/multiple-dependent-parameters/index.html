@@ -1,0 +1,1299 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Несколько зависимых параметров - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p,
+    .step p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+      overflow-wrap: break-word;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .scenario-demo {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .scenario-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .control-title {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .selector {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      padding: 4px;
+      border-radius: 8px;
+      background: #eef1f6;
+    }
+
+    .selector.discount-options {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .selector span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      color: #49515e;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .selector .active {
+      background: var(--yellow);
+      color: #111111;
+    }
+
+    .selector .disabled {
+      color: #9aa4b2;
+      text-decoration: line-through;
+    }
+
+    .demo-table {
+      width: 100%;
+      min-width: 0;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    .demo-table th,
+    .demo-table td {
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--line);
+      color: #252a31;
+      font-size: 15px;
+      line-height: 1.35;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .demo-table th {
+      background: #ffffff;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .demo-table td:nth-child(2),
+    .demo-table td:nth-child(3),
+    .demo-table th:nth-child(2),
+    .demo-table th:nth-child(3) {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .demo-table tr:last-child td {
+      border-bottom: 0;
+      font-weight: 700;
+    }
+
+    .bar-cell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: #d9dee7;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 820px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .blue {
+      border-top: 6px solid var(--blue);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 176px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    .compact-table {
+      min-width: 0;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre + p,
+    p + pre {
+      margin-top: 16px;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .scenario-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .scenario-tile {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .scenario-tile span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .scenario-tile strong {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .scenario-tile small {
+      display: block;
+      margin-top: 8px;
+      color: #323842;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow,
+      .scenario-matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .scenario-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .scenario-demo {
+        overflow-x: auto;
+      }
+
+      .scenario-demo .demo-table {
+        min-width: 520px;
+      }
+
+      .demo-table th,
+      .demo-table td {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .bar-cell {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Parameter table</span>
+          <h1>Multiple dependent parameters</h1>
+          <p class="lead">Паттерн помогает задать несколько связанных настроек расчета так, чтобы пользователь видел только допустимые комбинации. Например, чем выше минимальное количество товаров в заказе, тем большую скидку можно выбрать.</p>
+          <div class="hero-points" aria-label="Ключевые свойства паттерна">
+            <span>одна таблица комбинаций</span>
+            <span>параметры без связей с фактами</span>
+            <span>срезы ограничивают друг друга</span>
+            <span>расчет на уровне заказа</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Пример зависимых параметров">
+          <h2>Сценарий: порог 3, скидка 10%</h2>
+          <p class="chart-note">При выбранном пороге 3 список скидок заканчивается на 30%, потому что в таблице параметров нет строк с более высокой скидкой для этого порога.</p>
+          <div class="scenario-demo">
+            <div class="scenario-controls">
+              <div>
+                <span class="control-title">Min Quantity</span>
+                <div class="selector" aria-label="Порог количества">
+                  <span>1</span>
+                  <span class="active">3</span>
+                  <span>10</span>
+                </div>
+              </div>
+              <div>
+                <span class="control-title">Discount</span>
+                <div class="selector discount-options" aria-label="Размер скидки">
+                  <span>0%</span>
+                  <span class="active">10%</span>
+                  <span>30%</span>
+                  <span class="disabled">50%</span>
+                </div>
+              </div>
+            </div>
+            <table class="demo-table">
+              <thead>
+                <tr>
+                  <th>Brand</th>
+                  <th>Sales</th>
+                  <th>Discounted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="bar-cell"><span class="bar"><i style="width:100%"></i></span>Contoso</span>
+                  </td>
+                  <td>7 352 399</td>
+                  <td>6 775 725</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="bar-cell"><span class="bar"><i style="width:76%"></i></span>Fabrikam</span>
+                  </td>
+                  <td>5 554 016</td>
+                  <td>5 012 971</td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="bar-cell"><span class="bar"><i style="width:55%"></i></span>Adventure Works</span>
+                  </td>
+                  <td>4 011 112</td>
+                  <td>3 714 832</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>30 591 344</td>
+                  <td>27 962 813</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="legend">
+            <span style="color:#2f4eff"><i></i>скидка применяется по заказам</span>
+            <span style="color:#9aa4b2"><i></i>недопустимые пары не появляются в срезе</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Какую задачу решает</h2>
+          <p>В сценарном анализе часто есть несколько настроек, но не каждая пара значений имеет бизнес-смысл. Коммерческая команда может разрешать большую скидку только для более крупного заказа. Паттерн хранит допустимые пары в одной таблице параметров и не дает пользователю собрать сценарий, которого нет в правилах.</p>
+        </div>
+        <div class="grid three">
+          <article class="card check">
+            <h3>Срезы подсказывают допустимый выбор</h3>
+            <p>Когда пользователь выбирает <code>Min Quantity = 3</code>, срез скидки показывает только значения до <code>30.00%</code>. Запрещенные пары не нужно обрабатывать отдельной ошибкой в мере.</p>
+          </article>
+          <article class="card accent">
+            <h3>Одна таблица вместо многих правил</h3>
+            <p><code>Discount</code> содержит по одной строке на допустимую комбинацию порога и скидки. Эта структура проще, чем набор отдельных мер под каждый сценарий.</p>
+          </article>
+          <article class="card blue">
+            <h3>Продажи не отфильтровываются</h3>
+            <p>Таблица параметров остается без связей с <code>Sales</code>. Она передает выбранные числа в меру, но не меняет состав строк продаж.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Паттерн подходит, когда расчет зависит от нескольких параметров с ограниченным списком значений, а допустимость одного значения зависит от другого. Это может быть порог количества и скидка, уровень риска и лимит, тариф и доступный коэффициент.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Список допустимых комбинаций небольшой, заранее известен и его можно хранить как обычную таблицу набора данных. Пользователь должен выбирать сценарий, а не фильтровать факты.</p>
+          </article>
+          <article class="card stop">
+            <h3>Нужен другой подход</h3>
+            <p>Если все комбинации допустимы, проще использовать независимые таблицы параметров. Если выбор должен реально отбирать продажи, регионы или продукты, используйте обычное измерение со связью.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Связь между параметрами находится в строках самой таблицы <code>Discount</code>. Два среза используют разные колонки одной и той же таблицы, поэтому выбор порога автоматически оставляет только строки с разрешенными скидками.</p>
+        </div>
+        <div class="flow" aria-label="Логика зависимых параметров">
+          <article class="step">
+            <h3>Собрать комбинации</h3>
+            <p>В <code>Discount</code> добавляются только допустимые пары <code>Min Quantity</code> и <code>Discount</code>.</p>
+          </article>
+          <article class="step">
+            <h3>Оставить без связей</h3>
+            <p>Таблица не соединяется с <code>Sales</code>, <code>Product</code> или другими бизнес-таблицами.</p>
+          </article>
+          <article class="step">
+            <h3>Прочитать выбор</h3>
+            <p>Служебные меры возвращают выбранный порог и выбранную скидку, а при неоднозначном выборе используют значения по умолчанию.</p>
+          </article>
+          <article class="step">
+            <h3>Посчитать по заказам</h3>
+            <p><code>Discounted Amount</code> группирует продажи по заказам и применяет скидку, если количество достигло порога.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Минимальная модель содержит факт продаж, измерение продукта и одну таблицу зависимых параметров. Номер заказа обязателен: именно на уровне заказа проверяется условие применения скидки.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Необходимые таблицы и колонки">
+          <table>
+            <thead>
+              <tr>
+                <th>Элемент</th>
+                <th>Зачем нужен</th>
+                <th>Важно при подготовке</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Sales[Order Number]</code></td>
+                <td>Гранулярность применения скидки. Один заказ может состоять из нескольких строк продаж и нескольких брендов.</td>
+                <td>Мера сначала собирает строки текущего контекста по заказу, а затем проверяет суммарное количество.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Quantity]</code></td>
+                <td>Количество товаров в строках заказа.</td>
+                <td>Для сравнения с <code>Min Quantity</code> используется сумма количества по заказу.</td>
+              </tr>
+              <tr>
+                <td><code>Sales[Amount]</code></td>
+                <td>Исходная сумма продаж до сценарной скидки.</td>
+                <td><code>Sales Amount</code> не зависит от параметров; параметры меняют только <code>Discounted Amount</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Product[Brand]</code></td>
+                <td>Бизнес-разрез для чтения результата по брендам.</td>
+                <td>Обычная связь строится как <code>Sales[ProductKey]</code> -> <code>Product[ProductKey]</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Discount[Min Quantity]</code></td>
+                <td>Порог количества товаров в заказе: например, от 1 до 10.</td>
+                <td>Один порог может повторяться в нескольких строках, потому что ему соответствуют разные скидки.</td>
+              </tr>
+              <tr>
+                <td><code>Discount[Discount Label]</code>, <code>Discount[Discount]</code></td>
+                <td>Подпись скидки для интерфейса и числовая ставка для расчета: 0, 0,10, 0,30.</td>
+                <td>Подпись удобно сортировать по числовой ставке, чтобы порядок был 0%, 5%, 10% и дальше по возрастанию.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Минимальные требования к модели">
+          <span>Sales -> Product</span>
+          <span>Discount без связей</span>
+          <span>одна строка на допустимую пару</span>
+          <span>Order Number обязателен</span>
+          <span>Discount Label сортируется по Discount</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Таблица зависимых параметров</h2>
+          <p>Таблица <code>Discount</code> создается как физическая таблица модели. В примере она содержит пороги от 1 до 10 и скидки от 0% до 95% с шагом 5%, но оставляет только строки, где ставка не выше <code>Min Quantity / 10</code>.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Примеры допустимых комбинаций">
+          <table>
+            <thead>
+              <tr>
+                <th><code>Min Quantity</code></th>
+                <th>Доступные значения <code>Discount Label</code></th>
+                <th>Как читать правило</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>0.00%, 5.00%, 10.00%</td>
+                <td>Для минимального порога доступны только скидки до 10%.</td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>0.00%, 5.00%, 10.00%, 15.00%, 20.00%, 25.00%, 30.00%</td>
+                <td>Пара <code>3</code> и <code>50.00%</code> отсутствует, поэтому такая скидка не появится в срезе.</td>
+              </tr>
+              <tr>
+                <td class="num">10</td>
+                <td>0.00% ... 95.00%</td>
+                <td>Высокий порог открывает весь список ставок из примера.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">!</span>
+          <p><strong><code>Discount</code> остается таблицей параметров.</strong> Если связать ее с фактами или справочниками, выбор скидки начнет фильтровать данные, хотя должен только задавать числа для сценарной меры.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>Служебные меры читают выбранные значения из зависимой таблицы. Для <code>Min Quantity</code> нельзя проверять единственную строку таблицы: один выбранный порог соответствует нескольким строкам с разными скидками. Поэтому используется проверка <code>MIN = MAX</code> по конкретной колонке.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Выбранный порог количества</summary>
+            <div class="details-body">
+              <p><code>Selected Min Quantity</code> возвращает порог, если в текущем контексте осталось одно значение <code>Discount[Min Quantity]</code>. Если порог не выбран или выбран неоднозначно, применяется значение по умолчанию 1.</p>
+              <pre><code>Selected Min Quantity :=
+IF (
+    MIN ( Discount[Min Quantity] ) = MAX ( Discount[Min Quantity] ),
+    MAX ( Discount[Min Quantity] ),
+    1
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Выбранная скидка</summary>
+            <div class="details-body">
+              <p><code>Selected Discount</code> возвращает числовую ставку при одном выбранном значении <code>Discount[Discount]</code>. Если скидка не выбрана или выбрано несколько ставок, расчет использует 0.</p>
+              <pre><code>Selected Discount :=
+IF (
+    MIN ( Discount[Discount] ) = MAX ( Discount[Discount] ),
+    MAX ( Discount[Discount] ),
+    0
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Базовые меры продаж</summary>
+            <div class="details-body">
+              <p><code># Quantity</code> и <code>Sales Amount</code> описывают исходные данные. Они нужны отдельно, чтобы показать: параметры не фильтруют факт продаж.</p>
+              <pre><code># Quantity :=
+SUM ( Sales[Quantity] )
+
+Sales Amount :=
+SUM ( Sales[Amount] )</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Сценарная мера <code>Discounted Amount</code></summary>
+            <div class="details-body">
+              <p>Формула группирует строки текущего контекста по <code>Sales[Order Number]</code>. Для каждого заказа она считает количество и сумму через <code>CALCULATE</code>, а затем применяет выбранную скидку только к заказам, достигшим порога.</p>
+              <pre><code>Discounted Amount :=
+SUMX (
+    SUMMARIZE ( Sales, Sales[Order Number] ),
+    IF (
+        CALCULATE ( SUM ( Sales[Quantity] ) ) >= Discount[Selected Min Quantity],
+        ( 1 - Discount[Selected Discount] ) * CALCULATE ( SUM ( Sales[Amount] ) ),
+        CALCULATE ( SUM ( Sales[Amount] ) )
+    )
+)</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>При выбранных <code>Min Quantity = 3</code> и <code>Discount = 10.00%</code> скидка применяется к заказам, в которых количество товаров достигает 3. Итоговая строка пересчитывает меру в своем контексте, поэтому ее не стоит воспринимать как простую сумму видимых строк брендов.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Пример результата по брендам">
+          <table>
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th><code>Sales Amount</code></th>
+                <th><code>Discounted Amount</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A. Datum</td>
+                <td class="num">2 096 184,64</td>
+                <td class="num">1 935 508,73</td>
+              </tr>
+              <tr>
+                <td>Adventure Works</td>
+                <td class="num">4 011 112,28</td>
+                <td class="num">3 714 832,14</td>
+              </tr>
+              <tr>
+                <td>Contoso</td>
+                <td class="num">7 352 399,03</td>
+                <td class="num">6 775 724,69</td>
+              </tr>
+              <tr>
+                <td>Fabrikam</td>
+                <td class="num">5 554 015,73</td>
+                <td class="num">5 012 971,26</td>
+              </tr>
+              <tr>
+                <td>Litware</td>
+                <td class="num">3 255 704,03</td>
+                <td class="num">2 984 935,85</td>
+              </tr>
+              <tr>
+                <td>Northwind Traders</td>
+                <td class="num">1 040 552,13</td>
+                <td class="num">996 140,80</td>
+              </tr>
+              <tr>
+                <td>Proseware</td>
+                <td class="num">2 546 144,16</td>
+                <td class="num">2 302 708,91</td>
+              </tr>
+              <tr>
+                <td>Southridge Video</td>
+                <td class="num">1 384 413,85</td>
+                <td class="num">1 281 609,66</td>
+              </tr>
+              <tr>
+                <td>Tailspin Toys</td>
+                <td class="num">325 042,42</td>
+                <td class="num">309 494,86</td>
+              </tr>
+              <tr>
+                <td>The Phone Company</td>
+                <td class="num">1 123 819,07</td>
+                <td class="num">1 015 232,44</td>
+              </tr>
+              <tr>
+                <td>Wide World Importers</td>
+                <td class="num">1 901 956,66</td>
+                <td class="num">1 718 789,28</td>
+              </tr>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td class="num"><strong>30 591 343,98</strong></td>
+                <td class="num"><strong>27 962 812,99</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="scenario-matrix" style="margin-top: 22px;" aria-label="Что меняют зависимые параметры">
+          <article class="scenario-tile">
+            <span><code>Min Quantity</code></span>
+            <strong>список</strong>
+            <small>ограничивает доступные ставки скидки через строки таблицы <code>Discount</code>.</small>
+          </article>
+          <article class="scenario-tile">
+            <span><code>Discount</code></span>
+            <strong>сумму</strong>
+            <small>меняет только <code>Discounted Amount</code>, если заказ прошел выбранный порог.</small>
+          </article>
+          <article class="scenario-tile">
+            <span><code>Sales Amount</code></span>
+            <strong>факт</strong>
+            <small>остается исходной суммой продаж и не зависит от выбранных параметров.</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Особые случаи</h2>
+          <p>Эти правила лучше явно зафиксировать рядом с дашбордом, чтобы пользователь понимал, где заканчивается выбор сценария и начинается обычный разрез данных.</p>
+        </div>
+        <div class="grid three">
+          <article class="card accent">
+            <h3>Граница включительная</h3>
+            <p>Условие использует <code>&gt;= Min Quantity</code>. Заказ с количеством 3 получает скидку при выбранном пороге 3. Если нужно правило "строго больше", условие меняется на <code>&gt;</code>.</p>
+          </article>
+          <article class="card accent">
+            <h3>Неоднозначный выбор</h3>
+            <p>Если по одному параметру осталось несколько значений, только этот параметр возвращается к значению по умолчанию: порог к 1, скидка к 0. Второй параметр продолжает работать по своему выбору.</p>
+          </article>
+          <article class="card accent">
+            <h3>Итоговый контекст</h3>
+            <p>Если один заказ содержит товары разных брендов, в строках брендов он может не пройти порог, но пройти его в общем итоге. Это нормальный эффект расчета на уровне заказа.</p>
+          </article>
+        </div>
+        <div class="callout" style="margin-top: 22px;">
+          <span class="callout-mark">i</span>
+          <p><strong>Проверяйте выбор по колонке, а не по строке таблицы.</strong> При <code>Min Quantity = 3</code> в таблице остается несколько строк с разными скидками, поэтому проверка единственной строки ошибочно посчитает выбор неоднозначным.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Визуальные разрезы</h2>
+          <p>Лучше всего паттерн читается как два одиночных выбора рядом с таблицей, KPI или графиком. Сначала пользователь выбирает порог, затем видит доступные ставки скидки для этого порога.</p>
+        </div>
+
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо читается</h3>
+            <ul>
+              <li>одиночный выбор <code>Discount[Min Quantity]</code> и зависимый выбор <code>Discount[Discount Label]</code>;</li>
+              <li>таблица <code>Brand x Sales Amount x Discounted Amount</code>;</li>
+              <li>таблица допустимых пар <code>Min Quantity x Discount Label</code> для объяснения правил;</li>
+              <li>детализация по заказам для проверки, какие заказы прошли порог.</li>
+            </ul>
+          </article>
+          <article class="card stop">
+            <h3>Может ввести в заблуждение</h3>
+            <ul>
+              <li>показывать множественный выбор параметра без объяснения значения по умолчанию;</li>
+              <li>считать итоговую строку простой суммой строк брендов, когда один заказ распределен между брендами;</li>
+              <li>использовать только <code>Discount[Discount Label]</code> как бизнес-разрез продаж без выбранного порога;</li>
+              <li>добавлять связь от <code>Discount</code> к фактам или справочникам.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <a href="../../../index.html">Вернуться к списку</a>
+    </div>
+  </footer>
+</body>
+</html>

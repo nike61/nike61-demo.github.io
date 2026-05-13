@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Первая и последняя дата - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p,
+    .step p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .boundary-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 790px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .blue {
+      border-top: 6px solid var(--blue);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 176px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: min(100% - 28px, 1120px);
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Полуаддитивные расчеты</span>
+          <h1>First and last date</h1>
+          <p class="lead">Паттерн показывает значение показателя строго на первой или последней дате выбранного периода. Он нужен для остатков и других снимков состояния, которые суммируются по клиентам или счетам, но не суммируются по датам.</p>
+          <div class="hero-points" aria-label="Ключевые свойства паттерна">
+            <span>граница календаря</span>
+            <span>баланс на дату</span>
+            <span>не сумма по времени</span>
+            <span>blank без строки факта</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема последней даты периода">
+          <h2>Главное правило</h2>
+          <p class="chart-note">Если последняя дата месяца - 30 ноября, мера смотрит именно на 30 ноября. Записи 15 и 18 ноября не подставляются вместо границы периода.</p>
+          <svg class="boundary-chart" viewBox="0 0 420 260" role="img" aria-labelledby="boundary-title boundary-desc">
+            <title id="boundary-title">Строгая календарная граница периода</title>
+            <desc id="boundary-desc">На временной линии есть значения внутри месяца, но последняя календарная дата без значения возвращает blank.</desc>
+            <rect x="0" y="0" width="420" height="260" rx="8" fill="#ffffff"></rect>
+            <line x1="54" y1="132" x2="366" y2="132" stroke="#dfe3ea" stroke-width="3" stroke-linecap="round"></line>
+            <g fill="#5e6673" font-family="Roboto, Arial, sans-serif" font-size="12">
+              <text x="42" y="172">1 ноя</text>
+              <text x="143" y="172">15 ноя</text>
+              <text x="235" y="172">18 ноя</text>
+              <text x="338" y="172">30 ноя</text>
+            </g>
+            <circle cx="62" cy="132" r="7" fill="#dfe3ea"></circle>
+            <circle cx="164" cy="132" r="10" fill="#0f8f73"></circle>
+            <circle cx="260" cy="132" r="10" fill="#0f8f73"></circle>
+            <circle cx="360" cy="132" r="13" fill="#ffc106" stroke="#111111" stroke-width="2"></circle>
+            <path d="M360 92 L360 118" stroke="#111111" stroke-width="2" stroke-linecap="round"></path>
+            <path d="M332 82 C342 70, 377 70, 386 82" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round"></path>
+            <g font-family="Roboto, Arial, sans-serif">
+              <text x="112" y="82" fill="#0f8f73" font-size="15" font-weight="700">1 813</text>
+              <text x="219" y="82" fill="#0f8f73" font-size="15" font-weight="700">1 850</text>
+              <text x="316" y="60" fill="#111111" font-size="15" font-weight="700">blank</text>
+              <text x="38" y="216" fill="#111111" font-size="15" font-weight="700">Контекст: ноябрь 2020</text>
+              <text x="38" y="238" fill="#5e6673" font-size="13">Balance LastDate выбирает последнюю дату контекста,</text>
+              <text x="38" y="256" fill="#5e6673" font-size="13">а не последнюю дату с данными.</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span style="color:#0f8f73"><i></i>есть строка факта</span>
+            <span style="color:#b98b00"><i></i>дата расчета</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Какую задачу решает</h2>
+          <p>Остаток на счете, складской запас или численность сотрудников описывают состояние на конкретную дату. Если сложить такие значения за все дни месяца, получится не месячный остаток, а искусственно завышенное число.</p>
+        </div>
+        <div class="grid three">
+          <article class="card check">
+            <h3>Баланс периода</h3>
+            <p>Для месяца, квартала или года мера возвращает баланс на выбранной границе периода: первой или последней календарной дате в текущем контексте.</p>
+          </article>
+          <article class="card accent">
+            <h3>Сумма по клиентам</h3>
+            <p>На одной и той же дате значения можно складывать по клиентам, счетам, складам или подразделениям. Полуаддитивность относится именно к оси времени.</p>
+          </article>
+          <article class="card blue">
+            <h3>Честный blank</h3>
+            <p>Если на граничной дате нет записи, результат остается пустым. Это сигнал о выбранном бизнес-правиле или о пропуске данных на границе периода.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Это самый простой вариант полуаддитивного расчета. Он работает хорошо, когда данные действительно приходят на нужных календарных границах.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хороший сценарий</h3>
+            <p>Факт хранит снимки состояния, а регламент отчетности гарантирует строки на конец месяца, квартала или другого периода. Например, финансовая витрина загружает закрывающие балансы на последний день каждого месяца.</p>
+          </article>
+          <article class="card stop">
+            <h3>Нужен другой вариант</h3>
+            <p>Если надо брать последнюю дату с данными внутри периода или отдельную последнюю дату для каждого клиента, этот паттерн не подходит. Для таких задач используется логика "дата с данными" или расчет по клиенту.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Мера не перебирает все даты периода и не суммирует месяцы. Она находит одну дату в текущем контексте таблицы <code>Date</code>, затем считает базовую сумму только на этой дате.</p>
+        </div>
+        <div class="flow" aria-label="Логика расчета first and last date">
+          <article class="step">
+            <h3>Получить контекст</h3>
+            <p>Строка отчета задает набор дат: месяц, квартал, год, произвольный период или общий итог.</p>
+          </article>
+          <article class="step">
+            <h3>Выбрать границу</h3>
+            <p><code>Balance FirstDate</code> берет минимальный <code>Day Index</code>, а <code>Balance LastDate</code> берет максимальный.</p>
+          </article>
+          <article class="step">
+            <h3>Оставить одну дату</h3>
+            <p>Фильтр по календарю заменяется условием: дата должна иметь найденный индекс.</p>
+          </article>
+          <article class="step">
+            <h3>Сложить значения</h3>
+            <p>На выбранной дате складываются строки <code>Balances[Amount]</code> в текущем разрезе клиента или другого измерения.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Для паттерна нужна непрерывная таблица дат и факт со снимками состояния. В примере баланс хранится разреженно: у разных клиентов последние доступные даты могут отличаться.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Основные таблицы модели">
+          <table>
+            <thead>
+              <tr>
+                <th>Таблица</th>
+                <th>Назначение</th>
+                <th>Ключевые поля</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date</code></td>
+                <td>Непрерывный календарь, который определяет границы месяца, квартала, года и общего окна отчета.</td>
+                <td><code>Date</code>, <code>Day Index</code>, подписи месяца, квартала и года, sort-ключи для этих подписей.</td>
+              </tr>
+              <tr>
+                <td><code>Customer</code></td>
+                <td>Справочник клиентов или владельцев счетов, по которым баланс остается аддитивным.</td>
+                <td><code>Customer ID</code>, <code>Customer</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Balances</code></td>
+                <td>Факт со снимками баланса на конкретную дату для конкретного клиента.</td>
+                <td><code>Date</code>, <code>Customer ID</code>, <code>Amount</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Связи модели">
+          <span><code>Balances[Date]</code> -> <code>Date[Date]</code></span>
+          <span><code>Balances[Customer ID]</code> -> <code>Customer[Customer ID]</code></span>
+          <span><code>Date[Day Index]</code> без пропусков</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>Обе меры используют один прием: находят граничный <code>Day Index</code> в текущем контексте и через <code>FILTER ( ALL ( 'Date' ), ... )</code> оставляют в расчете только эту дату.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Balance LastDate</summary>
+            <div class="details-body">
+              <p>Показывает сумму балансов на последней календарной дате текущего контекста. Для квартала это последний день квартала, для года - последний день года в таблице <code>Date</code>.</p>
+              <pre><code>Balance LastDate :=
+CALCULATE (
+    SUM ( Balances[Amount] ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Day Index] = MAX ( 'Date'[Day Index] )
+    )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Balance FirstDate</summary>
+            <div class="details-body">
+              <p>Показывает сумму балансов на первой календарной дате текущего контекста. Если календарь начинается раньше первой строки факта, мера на этой границе вернет blank.</p>
+              <pre><code>Balance FirstDate :=
+CALCULATE (
+    SUM ( Balances[Amount] ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Day Index] = MIN ( 'Date'[Day Index] )
+    )
+)</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Итоги периода считаются не как сумма строк ниже. Итог квартала или года заново выбирает свою граничную дату и смотрит, есть ли на ней строки факта.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Примеры результата">
+          <table>
+            <thead>
+              <tr>
+                <th>Контекст</th>
+                <th>Что выбирает мера</th>
+                <th>Balance FirstDate</th>
+                <th>Balance LastDate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>December 2019, Katie Jordan</td>
+                <td>Первая дата окна - 2019-12-27, последняя - 2019-12-31.</td>
+                <td class="num">2,130.00</td>
+                <td class="num">blank</td>
+              </tr>
+              <tr>
+                <td>January 2020, все клиенты</td>
+                <td>На 2020-01-01 строк нет, на 2020-01-31 есть балансы всех трех клиентов.</td>
+                <td class="num">blank</td>
+                <td class="num">4,657.00</td>
+              </tr>
+              <tr>
+                <td>Q1 2020, все клиенты</td>
+                <td>Итог квартала смотрит на 2020-03-31, а не суммирует январь, февраль и март.</td>
+                <td class="num">blank</td>
+                <td class="num">10,667.00</td>
+              </tr>
+              <tr>
+                <td>November 2020, все клиенты</td>
+                <td>Внутри месяца есть строки 15 и 18 ноября, но последняя дата контекста - 2020-11-30.</td>
+                <td class="num">blank</td>
+                <td class="num">blank</td>
+              </tr>
+              <tr>
+                <td>CY 2020, все клиенты</td>
+                <td>Годовой итог смотрит на 2020-12-31. В примере на эту дату нет балансов.</td>
+                <td class="num">blank</td>
+                <td class="num">blank</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Разрезы в дашборде</h2>
+          <p>Паттерн лучше всего читается там, где пользователь явно понимает границу периода. Чем шире или произвольнее контекст дат, тем важнее подписать правило расчета.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работают</h3>
+            <ul>
+              <li>Месяц, квартал и год из таблицы <code>Date</code> с правильной сортировкой.</li>
+              <li>Клиент, счет, склад или подразделение, потому что на одной дате баланс можно суммировать по этим измерениям.</li>
+              <li>Таблица, где рядом показаны <code>Balance FirstDate</code> и <code>Balance LastDate</code>: разница между началом и концом периода становится очевидной.</li>
+            </ul>
+          </article>
+          <article class="card accent">
+            <h3>Требуют пояснения</h3>
+            <ul>
+              <li>Произвольный фильтр по диапазону дат: первая и последняя дата берутся из выбранного диапазона, даже если это середина месяца.</li>
+              <li>Общий итог всей страницы: он смотрит на первую или последнюю дату всего доступного календаря, а не на последний месяц с данными.</li>
+              <li>Сравнение клиентов с разной регулярностью загрузки: blank означает отсутствие строки на общей граничной дате, а не нулевой баланс.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Важные edge cases</h2>
+          <p>Эти ситуации лучше проговорить с владельцем отчета до публикации, потому что все варианты могут быть бизнес-корректными, но отвечают на разные вопросы.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <h3>Последняя дата без данных</h3>
+            <p>Katie Jordan имеет последнюю запись 2020-09-30, но годовой <code>Balance LastDate</code> за CY 2020 остается blank: мера проверяет 2020-12-31.</p>
+          </article>
+          <article class="card">
+            <h3>Единая дата для всех клиентов</h3>
+            <p>Итог по клиентам считается на общей граничной дате периода. Он не складывает персональные последние доступные даты клиентов.</p>
+          </article>
+          <article class="card">
+            <h3>Начало календаря влияет на результат</h3>
+            <p>Если таблица <code>Date</code> начинается раньше фактического окна загрузки, <code>Balance FirstDate</code> может возвращать blank на крупных итогах.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <div class="callout-mark">!</div>
+          <p><strong>Практическое правило:</strong> используйте этот паттерн, когда отсутствие строки на границе периода должно быть видно пользователю. Если нужно подставлять ближайшее предыдущее значение, это уже другой полуаддитивный расчет.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <span>Полуаддитивные расчеты</span>
+    </div>
+  </footer>
+</body>
+</html>

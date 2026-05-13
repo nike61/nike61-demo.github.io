@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Рост за период - Visiology DAX Patterns</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111111;
+      --muted: #5e6673;
+      --line: #dfe3ea;
+      --card: #ffffff;
+      --yellow: #ffc106;
+      --blue: #2f4eff;
+      --green: #0f8f73;
+      --red: #b84a4a;
+      --ink: #1f2937;
+      --code: #18212f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+      font-weight: 400;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    .band-inner,
+    .footer-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .hero {
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+      gap: 56px;
+      align-items: center;
+      padding: 86px 0 76px;
+    }
+
+    .hero-inner > * {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: 0;
+    }
+
+    h1,
+    .lead,
+    .chart-note,
+    .section-title p,
+    .card p,
+    .card li,
+    .note p,
+    .step p {
+      overflow-wrap: break-word;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 28px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 24px 0 0;
+      color: #222222;
+      font-size: 22px;
+      line-height: 1.52;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .hero-points span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: #222222;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .chart-card {
+      min-width: 0;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .chart-card h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .chart-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .growth-chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .mobile-growth-summary {
+      display: none;
+    }
+
+    .growth-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 5px 14px;
+      padding: 13px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .growth-row:first-child {
+      border-top: 0;
+    }
+
+    .growth-row span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .growth-row strong {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .growth-row small {
+      grid-column: 1 / -1;
+      color: #323842;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .growth-row.red strong {
+      color: var(--red);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+    }
+
+    .band.white {
+      background: #ffffff;
+    }
+
+    .band-inner {
+      padding: 72px 0;
+    }
+
+    .section-title {
+      max-width: 860px;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.23;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .note,
+    .table-wrap,
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .card p,
+    .card ul,
+    .note p {
+      margin: 0;
+      color: #252a31;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .check {
+      border-top: 6px solid var(--green);
+    }
+
+    .stop {
+      border-top: 6px solid var(--red);
+    }
+
+    .accent {
+      border-top: 6px solid var(--yellow);
+    }
+
+    .blue {
+      border-top: 6px solid var(--blue);
+    }
+
+    .note {
+      padding: 28px;
+    }
+
+    .note strong {
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      min-height: 194px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: #323842;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--yellow);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    td {
+      color: #252a31;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    td.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .measure-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      overflow: hidden;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.3;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--yellow);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 24px 24px;
+    }
+
+    .details-body p {
+      margin: 0 0 16px;
+      color: #252a31;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: #f7f9fc;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    pre code {
+      display: block;
+      min-width: 720px;
+      padding: 22px;
+      font-size: inherit;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag-list span {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #eef1f6;
+      color: #2c3440;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 28px;
+      border-radius: 8px;
+      background: #fff2bd;
+    }
+
+    .callout-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 700;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #20242a;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid.two,
+      .grid.three,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        font-size: 16px;
+      }
+
+      .topbar-inner,
+      .hero-inner,
+      .band-inner,
+      .footer-inner {
+        width: calc(100% - 28px);
+        max-width: 1120px;
+      }
+
+      .chart-card {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .growth-chart {
+        display: none;
+      }
+
+      .mobile-growth-summary {
+        display: grid;
+      }
+
+      .chart-note,
+      .mobile-growth-summary,
+      .chart-card .legend {
+        width: 260px;
+      }
+
+      .growth-row {
+        grid-template-columns: 1fr;
+      }
+
+      .growth-row strong {
+        white-space: normal;
+      }
+
+      .topbar-inner,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-inner {
+        padding: 18px 0;
+      }
+
+      .hero-inner {
+        padding: 48px 0 54px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .band-inner {
+        padding: 52px 0;
+      }
+
+      .section-title h2 {
+        font-size: 30px;
+      }
+
+      .card,
+      .note,
+      .callout {
+        padding: 22px;
+      }
+
+      .callout {
+        grid-template-columns: 1fr;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .legend span {
+        min-width: 0;
+        white-space: normal;
+      }
+
+      summary {
+        align-items: flex-start;
+        padding: 20px;
+        font-size: 18px;
+      }
+
+      .details-body {
+        padding: 0 20px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../../index.html">Visiology DAX Patterns</a>
+      <a class="nav-link" href="../../../index.html">К списку паттернов</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Полуаддитивные расчеты</span>
+          <h1>Рост за период</h1>
+          <p class="lead">Паттерн показывает, насколько изменилось состояние между началом и концом выбранного месяца, квартала или года. Он нужен для балансов, остатков, задолженности и других показателей, которые нельзя суммировать по датам.</p>
+          <div class="hero-points" aria-label="Ключевые свойства паттерна">
+            <span>opening balance</span>
+            <span>closing balance</span>
+            <span>разница состояний</span>
+            <span>перенос последнего значения</span>
+          </div>
+        </div>
+
+        <section class="chart-card" aria-label="Схема роста за период">
+          <h2>Главное правило</h2>
+          <p class="chart-note">Рост периода считается как закрывающий баланс минус открывающий баланс. Если одной из границ нет или дельта равна нулю, мера возвращает пустое значение.</p>
+          <svg class="growth-chart" viewBox="0 0 300 330" role="img" aria-labelledby="growth-title growth-desc">
+            <title id="growth-title">Рост баланса за Q1 2020</title>
+            <desc id="growth-desc">Диаграмма показывает открывающий баланс Q1 2020 на 31 декабря 2019 года, закрывающий баланс на 31 марта 2020 года и разницу 7 094.</desc>
+            <rect x="0" y="0" width="300" height="330" rx="8" fill="#ffffff"></rect>
+            <rect x="28" y="56" width="104" height="198" rx="8" fill="#f5f6f8" stroke="#dfe3ea"></rect>
+            <rect x="168" y="34" width="104" height="220" rx="8" fill="#eef6f3" stroke="#0f8f73"></rect>
+            <g font-family="Roboto, Arial, sans-serif">
+              <text x="44" y="86" fill="#5e6673" font-size="13" font-weight="500">Opening</text>
+              <text x="44" y="112" fill="#111111" font-size="22" font-weight="700">3 573</text>
+              <text x="44" y="136" fill="#5e6673" font-size="13">31.12.2019</text>
+              <text x="184" y="64" fill="#5e6673" font-size="13" font-weight="500">Closing</text>
+              <text x="184" y="90" fill="#111111" font-size="22" font-weight="700">10 667</text>
+              <text x="184" y="114" fill="#5e6673" font-size="13">31.03.2020</text>
+              <path d="M132 155 C148 128, 150 128, 168 155" fill="none" stroke="#2f4eff" stroke-width="3" stroke-linecap="round"></path>
+              <path d="M160 146 L169 155 L160 164" fill="none" stroke="#2f4eff" stroke-width="3" stroke-linecap="round"></path>
+              <rect x="44" y="204" width="212" height="66" rx="8" fill="#fff2bd"></rect>
+              <text x="62" y="230" fill="#20242a" font-size="14" font-weight="700">Growth Q1 2020</text>
+              <text x="62" y="254" fill="#20242a" font-size="22" font-weight="700">+7 094</text>
+              <line x1="42" y1="286" x2="258" y2="286" stroke="#dfe3ea" stroke-width="2" stroke-linecap="round"></line>
+              <circle cx="70" cy="286" r="9" fill="#ffc106"></circle>
+              <circle cx="150" cy="286" r="9" fill="#2f4eff"></circle>
+              <circle cx="230" cy="286" r="9" fill="#0f8f73"></circle>
+              <text x="49" y="313" fill="#5e6673" font-size="12">открытие</text>
+              <text x="127" y="313" fill="#5e6673" font-size="12">дельта</text>
+              <text x="202" y="313" fill="#5e6673" font-size="12">закрытие</text>
+            </g>
+          </svg>
+          <div class="mobile-growth-summary" aria-label="Ключевые точки расчета для Q1 2020">
+            <div class="growth-row">
+              <span>Opening</span>
+              <strong>3 573.00</strong>
+              <small>Сумма балансов на день перед началом Q1 2020.</small>
+            </div>
+            <div class="growth-row">
+              <span>Closing</span>
+              <strong>10 667.00</strong>
+              <small>Сумма балансов на последнюю календарную дату Q1 2020.</small>
+            </div>
+            <div class="growth-row">
+              <span>Growth</span>
+              <strong>7 094.00</strong>
+              <small>Разница между закрывающим и открывающим состоянием.</small>
+            </div>
+          </div>
+          <div class="legend">
+            <span style="color:#b98b00"><i></i>открывающая граница</span>
+            <span style="color:#2f4eff"><i></i>изменение</span>
+            <span style="color:#0f8f73"><i></i>закрывающая граница</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Какую задачу решает</h2>
+          <p>Бизнес часто спрашивает не сумму снимков за период, а изменение состояния: насколько вырос остаток, уменьшилась задолженность или изменился баланс клиента. Для такого вопроса нужно сравнить две точки периода, а не складывать все строки факта между ними.</p>
+        </div>
+        <div class="grid three">
+          <article class="card check">
+            <h3>Изменение состояния</h3>
+            <p><code>Growth</code> показывает разницу между закрывающим и открывающим балансом в текущем календарном контексте: месяц, квартал или год пересчитывают свои границы заново.</p>
+          </article>
+          <article class="card accent">
+            <h3>Вклад сущностей</h3>
+            <p>Показатель можно разложить по клиентам, счетам, складам или договорам, если именно по этим сущностям исходный баланс аддитивен.</p>
+          </article>
+          <article class="card blue">
+            <h3>Честное пустое значение</h3>
+            <p>Если открыть или закрыть период невозможно, мера остается пустой. Это лучше, чем показывать ноль там, где у модели нет нужной границы.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Когда применять</h2>
+          <p>Сначала договоритесь, что означает отсутствие строки баланса на границе периода. От этого зависит, использовать строгий <code>Growth</code> или вариант <code>Growth Ever</code> с переносом последнего известного значения.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Подходит</h3>
+            <p>Факт хранит снимки состояния на дату: банковский баланс, складской остаток, активный лимит, задолженность или численность. Пользователь хочет увидеть, чем состояние в конце периода отличается от состояния в начале.</p>
+          </article>
+          <article class="card stop">
+            <h3>Нужен другой расчет</h3>
+            <p>Продажи, оплаты, отгрузки и другие потоковые факты действительно суммируются за период. Для них рост должен строиться от суммы периода или накопительного итога, а не от двух снимков состояния.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Идея расчета</h2>
+          <p>Мера выглядит короткой, но результат зависит от бизнес-правила для границ. Строгий вариант требует строки на календарной границе, а вариант <code>Ever</code> считает последний известный снимок актуальным до следующего обновления.</p>
+        </div>
+        <div class="flow" aria-label="Логика расчета growth in period">
+          <article class="step">
+            <h3>Задать период</h3>
+            <p>Строка отчета выбирает месяц, квартал, год или заранее подготовленный период из таблицы <code>Period</code>.</p>
+          </article>
+          <article class="step">
+            <h3>Получить opening</h3>
+            <p>Строгий расчет смотрит на день перед началом периода. <code>Opening Ever</code> ищет последний известный снимок до начала периода.</p>
+          </article>
+          <article class="step">
+            <h3>Получить closing</h3>
+            <p>Строгий расчет смотрит на последнюю календарную дату периода. <code>Closing Ever</code> ищет последний известный снимок не позже конца периода.</p>
+          </article>
+          <article class="step">
+            <h3>Вычесть состояния</h3>
+            <p><code>Growth</code> и <code>Growth Ever</code> возвращают closing минус opening, только если обе границы есть и изменение не равно нулю.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Модель данных</h2>
+          <p>Строгий расчет использует календарь <code>Date</code> и факт <code>Balances</code>. Для переноса последнего известного значения подготовлен отдельный вспомогательный факт, чтобы дата открытия и закрытия выбиралась отдельно для каждого клиента и периода.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Основные таблицы модели">
+          <table>
+            <thead>
+              <tr>
+                <th>Таблица</th>
+                <th>Назначение</th>
+                <th>Ключевые поля</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Date</code></td>
+                <td>Непрерывный календарь. Он дает текущую календарную границу и индекс предыдущего дня для открытия периода.</td>
+                <td><code>Date</code>, <code>Day Index</code>, <code>Previous Day Index</code>, подписи месяца, квартала и года, sort-ключи.</td>
+              </tr>
+              <tr>
+                <td><code>Customer</code></td>
+                <td>Справочник сущностей, по которым баланс можно складывать. В примере это клиенты, в рабочей модели это может быть счет, договор или склад.</td>
+                <td><code>Customer ID</code>, <code>Customer</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Balances</code></td>
+                <td>Разреженный факт снимков состояния. Одна строка означает баланс конкретного клиента на конкретную дату.</td>
+                <td><code>Date</code>, <code>Date Key</code>, <code>Customer ID</code>, <code>Amount</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Period</code></td>
+                <td>Подготовленные месяцы, кварталы, годы и общий диапазон для расчета с переносом последнего значения.</td>
+                <td><code>Period Key</code>, <code>Period Label</code>, <code>Period Start</code>, <code>Period End</code>, <code>Period Sort</code>.</td>
+              </tr>
+              <tr>
+                <td><code>Customer Period Balances</code></td>
+                <td>Вспомогательный факт на уровне <code>Period x Customer</code>. В нем уже найдены суммы opening и closing по правилу <code>Ever</code>.</td>
+                <td><code>Opening Ever Date</code>, <code>Opening Ever Amount</code>, <code>Closing Ever Date</code>, <code>Closing Ever Amount</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tag-list" aria-label="Связи модели">
+          <span><code>Balances[Date]</code> -> <code>Date[Date]</code></span>
+          <span><code>Balances[Customer ID]</code> -> <code>Customer[Customer ID]</code></span>
+          <span><code>Customer Period Balances[Period Key]</code> -> <code>Period[Period Key]</code></span>
+          <span><code>Customer Period Balances[Customer ID]</code> -> <code>Customer[Customer ID]</code></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Меры</h2>
+          <p>Сначала создаются меры открытия и закрытия, затем на их основе вычисляется изменение. В Visiology blank в этих формулах возвращается через <code>DIVIDE ( 0, 0 )</code>, чтобы отчет не показывал искусственный ноль.</p>
+        </div>
+
+        <div class="measure-list">
+          <details open>
+            <summary>Opening</summary>
+            <div class="details-body">
+              <p>Показывает баланс на день перед первой датой текущего периода. Для January 2020 это 2019-12-31.</p>
+              <pre><code>Opening :=
+CALCULATE (
+    SUM ( Balances[Amount] ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Day Index] = MIN ( 'Date'[Previous Day Index] )
+    )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Closing</summary>
+            <div class="details-body">
+              <p>Показывает баланс на последней календарной дате текущего периода. Если на этой дате нет строк факта, результат остается пустым.</p>
+              <pre><code>Closing :=
+CALCULATE (
+    SUM ( Balances[Amount] ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Day Index] = MAX ( 'Date'[Day Index] )
+    )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Growth</summary>
+            <div class="details-body">
+              <p>Возвращает разницу <code>Closing - Opening</code>. Если opening, closing или сама дельта пустые, отчет тоже показывает пустое значение.</p>
+              <pre><code>Growth :=
+IF (
+    OR (
+        ISBLANK ( Balances[Opening] ),
+        ISBLANK ( Balances[Closing] )
+    ),
+    DIVIDE ( 0, 0 ),
+    IF (
+        Balances[Opening] = Balances[Closing],
+        DIVIDE ( 0, 0 ),
+        Balances[Closing] - Balances[Opening]
+    )
+)</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Opening Ever</summary>
+            <div class="details-body">
+              <p>Суммирует последний известный баланс каждого клиента строго до начала подготовленного периода. Для January 2020 у Katie Jordan это снимок 2019-12-27.</p>
+              <pre><code>Opening Ever :=
+SUM ( 'Customer Period Balances'[Opening Ever Amount] )</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Closing Ever</summary>
+            <div class="details-body">
+              <p>Суммирует последний известный баланс каждого клиента на дату не позже конца подготовленного периода.</p>
+              <pre><code>Closing Ever :=
+SUM ( 'Customer Period Balances'[Closing Ever Amount] )</code></pre>
+            </div>
+          </details>
+
+          <details>
+            <summary>Growth Ever</summary>
+            <div class="details-body">
+              <p>Вычисляет изменение по перенесенным значениям. Нулевая дельта остается пустой, поэтому декабрь 2020 не создает строку без изменения.</p>
+              <pre><code>Growth Ever :=
+IF (
+    OR (
+        ISBLANK ( 'Customer Period Balances'[Opening Ever] ),
+        ISBLANK ( 'Customer Period Balances'[Closing Ever] )
+    ),
+    DIVIDE ( 0, 0 ),
+    IF (
+        'Customer Period Balances'[Opening Ever] =
+            'Customer Period Balances'[Closing Ever],
+        DIVIDE ( 0, 0 ),
+        'Customer Period Balances'[Closing Ever] -
+            'Customer Period Balances'[Opening Ever]
+    )
+)</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <div class="callout-mark">!</div>
+          <p><strong>Важно для итогов:</strong> итог сначала суммирует opening и closing в своем контексте, а потом считает разницу. Поэтому итог периода не обязан равняться сумме видимых строк по клиентам или месяцам.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Как читать результат</h2>
+          <p>Строгий <code>Growth</code> полезен, когда календарная граница обязательна. <code>Growth Ever</code> полезен, когда последнее известное состояние считается действующим до следующего снимка.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Примеры результата growth in period">
+          <table>
+            <thead>
+              <tr>
+                <th>Контекст</th>
+                <th>Что происходит</th>
+                <th>Growth</th>
+                <th>Growth Ever</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>January 2020, Katie Jordan</td>
+                <td>В строгом расчете нет opening на 2019-12-31. В <code>Ever</code> opening переносится с 2019-12-27.</td>
+                <td class="num">blank</td>
+                <td class="num">-443.00</td>
+              </tr>
+              <tr>
+                <td>January 2020, все клиенты</td>
+                <td>Итог пересчитывает opening и closing на своем уровне. Поэтому строгий итог есть, хотя у Katie Jordan строка пустая.</td>
+                <td class="num">1,084.00</td>
+                <td class="num">-1,046.00</td>
+              </tr>
+              <tr>
+                <td>Q1 2020, все клиенты</td>
+                <td>Квартальный итог сравнивает границы квартала, а не складывает январь, февраль и март.</td>
+                <td class="num">7,094.00</td>
+                <td class="num">4,964.00</td>
+              </tr>
+              <tr>
+                <td>October 2020, все клиенты</td>
+                <td>Строгий итог сравнивает 2020-09-30 и 2020-10-31. У Katie Jordan закрытия на 2020-10-31 нет, но итог считается по общей сумме.</td>
+                <td class="num">-3,802.00</td>
+                <td class="num">-990.00</td>
+              </tr>
+              <tr>
+                <td>Q4 2020, все клиенты</td>
+                <td>На 2020-12-31 нет строгого closing. <code>Ever</code> переносит последние известные балансы клиентов и показывает изменение квартала.</td>
+                <td class="num">blank</td>
+                <td class="num">-1,287.00</td>
+              </tr>
+              <tr>
+                <td>CY 2020, все клиенты</td>
+                <td>Строгий год пустой из-за отсутствующего closing на календарной границе. <code>Ever</code> сравнивает последние известные состояния года.</td>
+                <td class="num">blank</td>
+                <td class="num">772.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Разрезы в дашборде</h2>
+          <p>Пользователь должен видеть период и понимать, какие две границы сравниваются. Разрезы, которые меняют смысл периода или не совпадают с гранулярностью вспомогательного факта, лучше сопровождать отдельным пояснением.</p>
+        </div>
+        <div class="grid two">
+          <article class="card check">
+            <h3>Хорошо работают</h3>
+            <ul>
+              <li>Месяц, квартал и год из таблицы <code>Date</code> для строгих <code>Opening</code>, <code>Closing</code> и <code>Growth</code>.</li>
+              <li>Периоды из таблицы <code>Period</code> для <code>Growth Ever</code>.</li>
+              <li>Клиент, счет, склад или договор, если эта же сущность используется в факте снимков и во вспомогательном факте.</li>
+              <li>Таблица, где рядом показаны <code>Growth</code> и <code>Growth Ever</code>: так видно, где сработал перенос последнего значения.</li>
+            </ul>
+          </article>
+          <article class="card accent">
+            <h3>Могут исказить чтение</h3>
+            <ul>
+              <li>День недели, признак выходного, сезон или другой атрибут даты, который выбирает несвязный набор дней. Мера возьмет первую и последнюю дату всего выбранного набора.</li>
+              <li>Произвольный интерактивный диапазон дат, если для него не подготовлены корректные границы в таблице <code>Period</code> или вспомогательном факте.</li>
+              <li>Карточка KPI без подписи правила расчета. Пустой результат может быть принят за ноль, хотя это отсутствие одной из границ.</li>
+              <li>Разрез ниже гранулярности вспомогательного факта. Если он подготовлен по клиенту, а отчет режет по счету внутри клиента, перенос может оказаться слишком крупным.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band white">
+      <div class="band-inner">
+        <div class="section-title">
+          <h2>Важные особые случаи</h2>
+          <p>Все варианты могут быть корректными, если совпадают с бизнес-правилом. Ошибка появляется, когда отчет не объясняет, что считается отсутствующей границей и когда последнее известное значение можно переносить вперед.</p>
+        </div>
+
+        <div class="grid three">
+          <article class="card">
+            <h3>Пусто не равно нулю</h3>
+            <p>В Q4 2020 строгий <code>Growth</code> пустой, потому что на 2020-12-31 нет closing. Это не означает, что изменение равно нулю.</p>
+          </article>
+          <article class="card">
+            <h3>Итог пересчитывается</h3>
+            <p>В January 2020 у Katie Jordan строгий <code>Growth</code> пустой, но общий строгий итог равен 1,084.00, потому что opening и closing существуют на уровне всех клиентов.</p>
+          </article>
+          <article class="card">
+            <h3>Нулевое изменение скрывается</h3>
+            <p>Если opening и closing равны, <code>Growth Ever</code> возвращает пустое значение. Так December 2020 не выглядит как отдельное изменение без бизнес-события.</p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <div class="callout-mark">!</div>
+          <p><strong>Практическое правило:</strong> используйте строгий <code>Growth</code>, когда отчет должен проверять наличие снимка на календарной границе. Используйте <code>Growth Ever</code>, когда последний известный баланс считается актуальным до появления следующего снимка.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Visiology DAX Patterns</span>
+      <span>Полуаддитивные расчеты</span>
+    </div>
+  </footer>
+</body>
+</html>
